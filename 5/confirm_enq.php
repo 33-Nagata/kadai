@@ -25,15 +25,29 @@
     <?php
     $hobby = ["スポーツ", "読書", "パソコン／インターネット", "旅行", "音楽鑑賞", "料理", "ショッピング", "なし"];
     if(array_key_exists("hobby", $_POST)){
+      $output = "";
       foreach($_POST["hobby"] as $value){
-        echo $hobby[$value]." ";
+        $output .= $hobby[$value].", ";
       }
+      $output = substr($output, 0, -2);
+      echo $output;
     } else {
       echo "なし";
     }
     ?>
     <br>
-    <a href="input_finish.php"><button>送信</button></a>
+    <form action="input_finish.php" method="POST">
+      <?php
+      echo '<input type="hidden" name="name" value='.$_POST["name"].'>';
+      echo '<input type="hidden" name="email" value='.$_POST["email"].'>';
+      echo '<input type="hidden" name="age" value='.$_POST["age"].'>';
+      echo '<input type="hidden" name="sex" value='.$_POST["sex"].'>';
+      if(array_key_exists("hobby", $_POST)){
+        echo '<input type="hidden" name="hobby" value="'.implode(" ", $_POST["hobby"]).'">';
+      }
+      ?>
+      <a href="input_finish.php"><button>送信</button></a>
+    </form>
     <a href="input_enq.php"><button>戻る</button></a>
 
 
