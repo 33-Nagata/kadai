@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <title>アンケート回答</title>
 </head>
+
 <body>
   <h1>アンケートにご回答ください</h1>
   <form action="confirm_enq.php" method="post">
-   <label for="name">名前：</label>
+    <label for="name">名前：</label>
     <input name="name" type="text">
     <br>
     <label for="email">Eメール：</label>
@@ -36,4 +38,5 @@
     <input type="submit" value="回答する">
   </form>
 </body>
+
 </html>
