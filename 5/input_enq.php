@@ -19,21 +19,18 @@
     <input name="age" type="number">
     <br>
     <label for="sex">性別：</label>
-    <select name="sex">
-      <option value="1">男性</option>
-      <option value="2">女性</option>
-      <option value="3">未回答</option>
-    </select>
+    <input name="sex" type="radio" value="0">男性
+    <input name="sex" type="radio" value="1">女性
+    <input name="sex" type="radio" value="2" checked="checked">未回答
     <br>
     <label for="hobby">趣味：</label>
-    <input type="checkbox" name="hobby" value="1">スポーツ
-    <input type="checkbox" name="hobby" value="2">読書
-    <input type="checkbox" name="hobby" value="3">パソコン／インターネット
-    <input type="checkbox" name="hobby" value="4">旅行
-    <input type="checkbox" name="hobby" value="5">音楽鑑賞
-    <input type="checkbox" name="hobby" value="6">料理
-    <input type="checkbox" name="hobby" value="7">ショッピング
-    <input type="checkbox" name="hobby" value="8">なし
+    <input type="checkbox" name="hobby[]" value="0">スポーツ
+    <input type="checkbox" name="hobby[]" value="1">読書
+    <input type="checkbox" name="hobby[]" value="2">パソコン／インターネット
+    <input type="checkbox" name="hobby[]" value="3">旅行
+    <input type="checkbox" name="hobby[]" value="4">音楽鑑賞
+    <input type="checkbox" name="hobby[]" value="5">料理
+    <input type="checkbox" name="hobby[]" value="6">ショッピング
     <br>
     <input type="submit" value="回答する">
   </form>
