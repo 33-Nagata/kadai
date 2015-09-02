@@ -12,36 +12,78 @@
   <h1>アンケートにご回答ください</h1>
   <form action="confirm_enq.php" method="post">
     <label for="name">名前：</label>
-    <input name="name" type="text">
+    <?php
+    $name_tag = '<input name="name" type="text"';
+    if(array_key_exists("name", $_POST)){
+      $name_tag .= ' value="'.$_POST["name"].'"';
+    }
+    $name_tag .= '>';
+    echo $name_tag;
+    ?>
     <br>
     <label for="email">Eメール：</label>
-    <input name="email" type="email">
+    <?php
+    $email_tag = '<input name="email" type="email"';
+    if(array_key_exists("email", $_POST)){
+      $email_tag .= ' value="'.$_POST["email"].'"';
+    }
+    $email_tag .= '>';
+    echo $email_tag;
+    ?>
     <br>
     <label for="age">年齢：</label>
-    <input name="age" type="number" min="0">
+    <?php
+    $age_tag = '<input name="age" type="number" min="0"';
+    if(array_key_exists("age", $_POST)){
+      $age_tag .= ' value="'.$_POST["age"].'"';
+    }
+    $age_tag .= '>';
+    echo $age_tag;
+    ?>
     <br>
     <label for="sex">性別：</label>
-    <input name="sex" type="radio" value="0">男性
-    <input name="sex" type="radio" value="1">女性
-    <input name="sex" type="radio" value="2" checked="checked">未回答
+    <?php
+    $sexes = ["男性", "女性", "未回答"];
+    for($i=0;$i<3;$i++){
+      $sex_tag = '<input name="sex" type="radio" value="'.$i.'"';
+      if(array_key_exists("sex", $_POST) && $_POST["sex"] == strval($i)){
+        $sex_tag .= ' checked="checked"';
+      } else if(!array_key_exists("sex", $_POST) && $i == 2){
+        $sex_tag .= ' checked="checked"';
+      }
+      $sex_tag .= '>'.$sexes[$i];
+      echo $sex_tag;
+    }
+    ?>
     <br>
     <label for="hobby">趣味：</label>
-    <input type="checkbox" name="hobby[]" value="0">スポーツ
-    <input type="checkbox" name="hobby[]" value="1">読書
-    <input type="checkbox" name="hobby[]" value="2">パソコン／インターネット
-    <input type="checkbox" name="hobby[]" value="3">旅行
-    <input type="checkbox" name="hobby[]" value="4">音楽鑑賞
-    <input type="checkbox" name="hobby[]" value="5">料理
-    <input type="checkbox" name="hobby[]" value="6">ショッピング
+    <?php
+    $hobbies = ["スポーツ", "読書", "パソコン／インターネット", "旅行", "音楽鑑賞", "料理", "ショッピング"];
+    for($i=0;$i<7;$i++){
+      $hobby_tag = '<input type="checkbox" name="hobby[]" value="'.$i.'"';
+      if(array_key_exists("hobby", $_POST) && strpos($_POST["hobby"], strval($i)) !== false){
+        $hobby_tag .= 'checked="checked"';
+      }
+      $hobby_tag .= '>'.$hobbies[$i];
+      echo $hobby_tag;
+    }
+    ?>
     <br>
-    <input type="submit" value="回答する" disabled>
+    <?php
+    $submit_tag = '<input type="submit" value="回答する"';
+    if(!array_key_exists("name", $_POST)){
+      $submit_tag .= ' disabled';
+    }
+    $submit_tag .= '>';
+    echo $submit_tag;
+    ?>
   </form>
 
   <script>
   $(document).ready(function() {
     $("input").on("change", function(){
       if ($("input[name=name]").val() != "" && $("input[name=email]").val() != "" && $("input[name=age]").val() != "") {
-        $("input[type=submit]").prop("disabled", false);
+        $("input[type=sumit]").prop("disabled", false);
       } else {
         $("input[type=submit]").prop("disabled", true);
       }
