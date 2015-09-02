@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>集計結果</title>
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   </head>
   <body>
     <h1>アンケート結果</h1>
@@ -76,16 +78,51 @@
     ?>
 
     <?php
-    for ($i=0; $i < count($sex) - 1; $i++) {
-      echo $sex[$i]."：".($sex_count[$i] / $total * 100)."%<br>";
-    }
-    for ($i=0; $i < count($hobby) - 1; $i++) {
+    for ($i=0; $i < count($hobby); $i++) {
       echo $hobby[$i]."：".($hobby_count[$i] / $total * 100)."%<br>";
     }
     ?>
-
-
-
+    <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+    <div id="barchart" style="width: 900px; height: 300px;"></div>
     <a href="index.php"><button>ホームに戻る</button></a>
+
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var sex_data = google.visualization.arrayToDataTable([
+          ['性別', '割合'],
+          [<?php echo "'".$sex[0]."', ".$sex_count[0]; ?>],
+          [<?php echo "'".$sex[1]."', ".$sex_count[1]; ?>],
+          [<?php echo "'".$sex[2]."', ".$sex_count[2]; ?>]
+        ]);
+
+        var sex_options = {
+          title: '回答者の性別',
+          is3D: true,
+        };
+
+        var pie_chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        pie_chart.draw(sex_data, sex_options);
+
+        var hobby_data = google.visualization.arrayToDataTable([
+          ['趣味', '人数'],
+          [<?php echo "'".$hobby[0]."', ".$hobby_count[0]; ?>],
+          [<?php echo "'".$hobby[1]."', ".$hobby_count[1]; ?>],
+          [<?php echo "'".$hobby[2]."', ".$hobby_count[2]; ?>],
+          [<?php echo "'".$hobby[3]."', ".$hobby_count[3]; ?>],
+          [<?php echo "'".$hobby[4]."', ".$hobby_count[4]; ?>],
+          [<?php echo "'".$hobby[5]."', ".$hobby_count[5]; ?>],
+          [<?php echo "'".$hobby[6]."', ".$hobby_count[6]; ?>]
+        ]);
+
+        var hobby_options = {
+          title: '回答者の趣味'
+        };
+
+        var bar_chart = new google.visualization.BarChart(document.getElementById('barchart'));
+        bar_chart.draw(hobby_data, hobby_options);
+      }
+    </script>
   </body>
 </html>
