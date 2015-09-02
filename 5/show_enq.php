@@ -26,11 +26,24 @@
           </tr>
         </thead>
         <tbody>
-          <?php while($array = fgetcsv($fp)): ?>
+          <?php
+          $total = 0;
+          $sex_count = [];
+          for ($i=0; $i < count($sex); $i++) {
+            $sex_count[] = 0;
+          }
+          $hobby_count = [];
+          for ($i=0; $i < count($hobby); $i++) {
+            $hobby_count[] = 0;
+          }
+          while($array = fgetcsv($fp)):
+            $total++;
+          ?>
           <tr>
             <?php
             for ($i=0; $i < count($array); $i++) {
               if ($contents[$i] == "性別") {
+                $sex_count[$array[$i]]++;
                 for ($j=0; $j < count($sex); $j++) {
                   $array[$i] = str_replace($j, $sex[$j], $array[$i]);
                 }
@@ -39,6 +52,10 @@
                 if ($array[$i] == "") {
                   $array[$i] = "なし";
                 } else {
+                  $hobbies = explode(" ", $array[$i]);
+                  foreach ($hobbies as $value) {
+                    $hobby_count[$value]++;
+                  }
                   for ($j=0; $j < count($hobby); $j++) {
                     $array[$i] = str_replace($j, $hobby[$j], $array[$i]);
                   }
@@ -57,6 +74,18 @@
         fclose($fp);
     endif;
     ?>
+
+    <?php
+    for ($i=0; $i < count($sex) - 1; $i++) {
+      echo $sex[$i]."：".($sex_count[$i] / $total * 100)."%<br>";
+    }
+    for ($i=0; $i < count($hobby) - 1; $i++) {
+      echo $hobby[$i]."：".($hobby_count[$i] / $total * 100)."%<br>";
+    }
+    ?>
+
+
+
     <a href="index.php"><button>ホームに戻る</button></a>
   </body>
 </html>
