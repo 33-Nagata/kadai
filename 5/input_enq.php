@@ -83,7 +83,7 @@
   $(document).ready(function() {
     $("input").on("change", function(){
       if ($("input[name=name]").val() != "" && $("input[name=email]").val() != "" && $("input[name=age]").val() != "") {
-        $("input[type=sumit]").prop("disabled", false);
+        $("input[type=submit]").prop("disabled", false);
       } else {
         $("input[type=submit]").prop("disabled", true);
       }
