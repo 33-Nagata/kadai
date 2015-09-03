@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>集計結果</title>
 
+    <link rel="stylesheet" href="css/enq.css">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
   </head>
   <body>
@@ -77,13 +78,8 @@
     endif;
     ?>
 
-    <?php
-    for ($i=0; $i < count($hobby); $i++) {
-      echo $hobby[$i]."：".($hobby_count[$i] / $total * 100)."%<br>";
-    }
-    ?>
-    <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
-    <div id="barchart" style="width: 900px; height: 300px;"></div>
+    <div id="piechart_3d"></div>
+    <div id="barchart"></div>
     <a href="index.php"><button>ホームに戻る</button></a>
 
     <script type="text/javascript">
@@ -105,15 +101,16 @@
         var pie_chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
         pie_chart.draw(sex_data, sex_options);
 
+        var color = ['#000000', '#000077', '#007700', '#007777', '#770000', '#770077', '#777700'];
         var hobby_data = google.visualization.arrayToDataTable([
-          ['趣味', '人数'],
-          [<?php echo "'".$hobby[0]."', ".$hobby_count[0]; ?>],
-          [<?php echo "'".$hobby[1]."', ".$hobby_count[1]; ?>],
-          [<?php echo "'".$hobby[2]."', ".$hobby_count[2]; ?>],
-          [<?php echo "'".$hobby[3]."', ".$hobby_count[3]; ?>],
-          [<?php echo "'".$hobby[4]."', ".$hobby_count[4]; ?>],
-          [<?php echo "'".$hobby[5]."', ".$hobby_count[5]; ?>],
-          [<?php echo "'".$hobby[6]."', ".$hobby_count[6]; ?>]
+          ['趣味', '人数', {role: 'style'}],
+          [<?php echo "'".$hobby[0]."', ".$hobby_count[0]; ?>, color[0]],
+          [<?php echo "'".$hobby[1]."', ".$hobby_count[1]; ?>, color[1]],
+          [<?php echo "'".$hobby[2]."', ".$hobby_count[2]; ?>, color[2]],
+          [<?php echo "'".$hobby[3]."', ".$hobby_count[3]; ?>, color[3]],
+          [<?php echo "'".$hobby[4]."', ".$hobby_count[4]; ?>, color[4]],
+          [<?php echo "'".$hobby[5]."', ".$hobby_count[5]; ?>, color[5]],
+          [<?php echo "'".$hobby[6]."', ".$hobby_count[6]; ?>, color[6]]
         ]);
 
         var hobby_options = {
