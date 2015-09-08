@@ -9,24 +9,14 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="inner clearfix">
-            <h1 class="site-title"><a href="#"><img src="img/logo.png" alt="Cheese Academy Tokyo"></a></h1>
-            <ul class="list-header text-right">
-                <li>CHEESE DEVELOPMENT</li>
-                <li>GROWTH CHEESE</li>
-                <li>CHEESE PERSPECTIVE</li>
-                <li>CHEESE GENERATOR</li>
-            </ul>
-        </div>
-    </header>
-    
+    <?php include('header.php'); ?>
+
     <section class="main_visual">
         <div class="inner">
             <p class="catch text-center">世界を震わすチーズを創ろう。<span class="catch-small">新しい形のチーズ職人養成学校、はじまります。</span></p>
         </div>
     </section>
-    
+
     <section class="news contents-box">
         <h2 class="section-title text-center">
             <span class="section-title__yellow">News</span><span class="section-title-ja text-center">お知らせ・更新情報</span>
@@ -43,7 +33,7 @@
             <p class="view-detail text-right"><a href="#">ニュース一覧を見る</a></p>
         </article>
     </section>
-   
+
     <section class="feature contents-box">
         <div class="inner">
             <h2 class="section-title text-center">
@@ -56,7 +46,7 @@
             </ul>
         </div>
     </section>
-    
+
     <section class="cource contents-box">
         <div class="inner">
             <h2 class="section-title text-center">
@@ -74,7 +64,7 @@
                     </p>
                 </div>
             </div>
-            <div class="block-cource clearfix">   
+            <div class="block-cource clearfix">
                 <div class="cource-img__reverse">
                     <img src="img/cource-academy.png" alt="">
                 </div>
