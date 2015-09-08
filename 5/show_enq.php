@@ -78,8 +78,8 @@
     endif;
     ?>
 
-    <div id="piechart_3d"></div>
-    <div id="barchart"></div>
+    <div class="chart" id="piechart_3d"></div>
+    <div class="chart" id="barchart"></div>
     <a href="index.php"><button>ホームに戻る</button></a>
 
     <script type="text/javascript">
