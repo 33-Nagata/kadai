@@ -1,0 +1,259 @@
+@charset "utf-8";
+
+body{
+    font-size:62.5%;
+    font-family:'Helvetica Neue', Helvetica, Arial, YuGothic, 'Yu Gothic', 游ゴシック体, '游ゴシック', 'ヒラギノ角ゴ ProN W3', 'Hiragino         Kaku Gothic ProN', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', メイリオ, Meiryo, 'MS ゴシック', 'MS Gothic', sans-serif;
+}
+
+
+/*---------------------
+common classes
+----------------------*/
+.inner{
+    width:960px;
+    margin:0 auto;    
+}
+
+.text-center{
+    text-align:center;
+}
+.text-right{
+    text-align:right;
+}
+
+/*---------------------
+title module
+----------------------*/
+.site-title{
+    float:left;
+}
+
+.section-title{
+    margin-bottom: 21px;
+    font-size:21px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+.section-title-ja{
+    display: block;
+    margin-top:21px;
+    font-size:14px;
+}
+.section-title__yellow{
+    color:#ffd61a;
+}
+.section-title__white{
+    color:#fff;
+}
+/*gallery＆entry*/
+.contents-heading{
+    padding: 80px 0 40px;
+}
+.bg-yellow{
+    background-color:#ffd61a;
+}
+/*cource-title*/
+.cource-title{
+    margin-bottom: 27px;
+    font-size: 18px;
+}
+
+/*---------------------
+list module
+----------------------*/
+.list-header{
+    float:right;
+}
+.list-header >li{
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.list-feature{
+    display: table;
+}
+
+.list-feature>li{
+    display: table-cell;
+    padding:0 40px;
+}
+.list-feature>li:first-child{
+    padding:0 40px 0 10px;
+}
+.list-feature>li:last-child{
+    padding:0 10px 0 40px;
+}
+
+
+.list-gallery{
+    width:700px;
+    margin: 0 auto;
+}
+
+.list-gallery>li{
+    float:left;
+    margin-right:20px;
+    margin-bottom: 10px;
+}
+
+.list-gallery .no-white-space{
+    margin-right: 0;
+}
+.list-footer {
+    margin-top:72px;
+}
+
+.list-footer >li{
+    width:300px;
+    float:left;
+    margin-right:20px;
+    padding:47px 0;
+    background:#fff;
+}
+.list-footer >li.maps{
+    padding:0;
+}
+
+/*---------------------
+block-module
+----------------------*/
+.header{
+    padding:24px 0;
+}
+.contents-box{
+    padding:56px 0 48px;
+}
+.feature{
+    padding:56px 0 48px;
+    background-color:#ffd61a;
+}
+.news-detail{
+    width:600px;
+    margin:80px auto 0;
+    line-height:1.5;
+}
+.footer{
+    background: rgb(123, 122, 122) ;
+}
+
+
+/*---------------------
+main_visual-module
+----------------------*/
+.main_visual{
+    padding:300px 0 0;
+    background:url(../img/bg-cheese.jpg) no-repeat;
+    background-size: cover;
+    height:460px;
+}
+
+.catch{
+    color:#fff;
+    font-size:60px;
+    font-family: 'ヒラギノ角ゴ ProN W6', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ Pro W6', 'Hiragino Kaku Gothic Pro';
+    font-weight: bold;
+}
+.catch-small{
+    display: block;
+    margin-top:48px;
+    font-size:36px;
+
+}
+
+/*---------------------
+news-parts
+----------------------*/
+.news-date{
+    float:left;
+    margin-right:43px;
+}
+.view-detail{
+    margin-top:56px;
+}
+/*---------------------
+cource-parts
+----------------------*/
+.block-cource{
+    margin-bottom:48px;
+}
+.block-cource-lab{
+    margin-top:100px; 
+}
+.cource-img{
+    float:left;
+    margin-right:180px;
+}
+.cource-img__reverse{
+    float:right;
+    margin-left:180px;
+}
+
+.cource-txt{
+    padding:36px 0 42px;
+    line-height: 1.5;
+}
+
+.cource-txt__usually{
+    float:left;
+}
+
+.cource-txt__reverse{
+    float:right;
+}
+
+/*---------------------
+footer-parts
+----------------------*/
+.footer-caution{
+    margin-top: 21px;
+    text-align: left;
+    line-height: 1.5;
+    color: #fff;
+}
+/*---------------------
+form-module
+----------------------*/
+input[type="text"] {
+    width:170px;
+    appearance:none;
+    -webkit-appearance:none;
+}
+select {
+    width:220px;
+    appearance:none;
+    -webkit-appearance:none;
+}
+input[type="radio"]{
+    width:11px;
+    height:11px;
+    margin-right:12px;
+}
+label{
+    display: block;
+    padding-bottom: 14px;
+    line-height: 2.5;
+}
+.form-module{
+    width:560px;
+    margin:0 auto;    
+}
+.form-module td{
+    padding-bottom: 24px;
+}
+
+.form-text{
+    width:200px;
+}
+.entry-btn{
+    width:399px;
+    height:90px;
+    background:url(../img/btn-entry.png) no-repeat;
+    text-indent:100%;
+    white-space: nowrap;
+}
+
+.btn-pageTop{
+    position: fixed;
+    right: 20px;
+    bottom:20px;
+
+}
