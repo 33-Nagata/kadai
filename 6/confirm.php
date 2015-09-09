@@ -93,22 +93,8 @@
               <tr>
                 <th>志望動機</th>
                 <td>:<?php
-                  switch ($motiv) {
-                    case '1':
-                      echo '起業をしたい';
-                      break;
-                    case '2':
-                      echo 'チーズ企業に就職したい。';
-                      break;
-                    case '3':
-                      echo 'チーズと関わる仕事なので、知識をつけたい。';
-                      break;
-                    case '4':
-                      echo '教養として身につけたい';
-                      break;
-                    default:
-                      echo '選択されていません';
-                  }
+                  include('motivation.php');
+                  echo $motivations[$motiv];
                 ?></td>
               </tr>
             </table>

@@ -146,10 +146,12 @@
                     <tr>
                         <td class="form-text">志望動機</td>
                         <td>
-                            <label for="1"><input type="radio" name="motivation[]" value="1" id="1">起業をしたい</label>
-                            <label for="2"><input type="radio" name="motivation[]" value="2" id="2">チーズ企業に就職したい。</label>
-                            <label for="3"><input type="radio" name="motivation[]" value="3" id="3">チーズと関わる仕事なので、知識をつけたい。</label>
-                            <label for="4"><input type="radio" name="motivation[]" value="4" id="4">教養として身につけたい</label>
+                            <?php
+                            include('motivation.php');
+                            for($i=1;$i<count($motivations);$i++){
+                                echo '<label for="'.$i.'"><input type="radio" name="motivation[]" value="'.$i.'" id="'.$i.'">'.$motivations[$i].'</label>';
+                            }
+                            ?>
                         </td>
                     </tr>
                 </table>
