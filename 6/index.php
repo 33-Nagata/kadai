@@ -28,16 +28,13 @@
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            var_dump($result);
             $pdo = null;
             ?>
             <dl class="clearfix">
-                <dt class="news-date">2015.07.12</dt>
-                <dd class="news-description">初日開講しました！</dd>
-                <dt class="news-date">2015.06.12</dt>
-                <dd class="news-description">初めてのチーズハッカソンを開催しました！</dd>
-                <dt class="news-date">2015.04.11</dt>
-                <dd class="news-description">トーキョーチーズFesを開催いたしました！</dd>
+                <?php foreach($result as $news): ?>
+                    <dt class="news-date"><?php echo $news["create_date"]; ?></dt>
+                    <dd class="news-description"><?php echo mb_substr($news["news_title"], 0, 10); ?></dd>
+                <?php endforeach ?>
             </dl>
             <p class="view-detail text-right"><a href="#">ニュース一覧を見る</a></p>
         </article>
