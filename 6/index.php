@@ -121,23 +121,23 @@
                 <span class="section-title">Entry</span><span class="section-title__white section-title-ja text-center">説明会に申し込む</span></h2>
         </div>
         <div class="inner contents-box">
-            <form action="#" class="form-module">
+            <form action="confirm.php" class="form-module" method="post">
                 <table>
                     <tr>
                         <td class="form-text">氏名</td>
-                        <td><input type="text" value="" name="name"></td>
+                        <td><input type="text" value="" name="name" required="required"></td>
                     </tr>
                     <tr>
                         <td class="form-text">フリガナ</td>
-                        <td><input type="text" value="" name="kana"></td>
+                        <td><input type="text" value="" name="kana" required="required"></td>
                     </tr>
                     <tr>
                         <td class="form-text">メールアドレス</td>
-                        <td><input type="text" value="" name="email"></td>
+                        <td><input type="email" value="" name="email" required="required"></td>
                     </tr>
                     <tr>
                         <td class="form-text">説明会の希望日時</td>
-                        <td><select id="select-box" name="date">
+                        <td><select id="select-box" name="date" required="required">
                                 <option value="2015/7/18 10:00">2015/7/18 10:00</option>
                                 <option value="2015/7/25 10:00">2015/7/25 10:00</option>
                             </select>
@@ -146,10 +146,10 @@
                     <tr>
                         <td class="form-text">志望動機</td>
                         <td>
-                            <label for="1"><input type="radio" name="motivation" value="起業したい" id="1">起業をしたい</label>
-                            <label for="2"><input type="radio" name="motivation" value="チーズ企業に就職したい。" id="2">チーズ企業に就職したい。</label>
-                            <label for="3"><input type="radio" name="motivation" value="チーズと関わる仕事なので、知識をつけたい。" id="3">チーズと関わる仕事なので、知識をつけたい。</label>
-                            <label for="4"><input type="radio" name="motivation" value="教養として身につけたい" id="4">教養として身につけたい</label>
+                            <label for="1"><input type="radio" name="motivation[]" value="1" id="1">起業をしたい</label>
+                            <label for="2"><input type="radio" name="motivation[]" value="2" id="2">チーズ企業に就職したい。</label>
+                            <label for="3"><input type="radio" name="motivation[]" value="3" id="3">チーズと関わる仕事なので、知識をつけたい。</label>
+                            <label for="4"><input type="radio" name="motivation[]" value="4" id="4">教養として身につけたい</label>
                         </td>
                     </tr>
                 </table>
