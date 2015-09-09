@@ -40,7 +40,7 @@
                     <dd class="news-description"><?php echo '<a href="'.$url.'">'.$title.'</a>'; ?></dd>
                 <?php endforeach ?>
             </dl>
-            <p class="view-detail text-right"><a href="#">ニュース一覧を見る</a></p>
+            <p class="view-detail text-right"><a href="all_news.php">ニュース一覧を見る</a></p>
         </article>
     </section>
 
