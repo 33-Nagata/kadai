@@ -21,14 +21,13 @@
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $pdo = null;
-            var_dump($result);
             ?>
-            <span class="section-title-ja text-center">日付</span>
+            <span class="section-title-ja text-center"><?php echo substr($result[0]["create_date"], 0, 10); ?></span>
         </h2>
         <article class="news-detail">
             <dl class="clearfix">
-                <dd class="news-title">ニュースタイトル</dd>
-                <dd>ニュース詳細：あいうえおかきくけこさしすせそたちつてと</dd>
+                <dd class="news-title"><?php echo $result[0]["news_title"]; ?></dd>
+                <dd>ニュース詳細：<?php echo $result[0]["news_detail"]; ?></dd>
             </dl>
 
         </article>
