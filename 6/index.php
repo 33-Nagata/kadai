@@ -24,7 +24,7 @@
         <article class="news-detail">
             <?php
             $pdo = new PDO('mysql:host=localhost;dbname=cs_academy;charset=utf8', 'root', '');
-            $sql = "select news_title, create_date from news ORDER BY create_date DESC LIMIT 5";
+            $sql = "select news_id, news_title, create_date from news ORDER BY create_date DESC LIMIT 5";
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -33,7 +33,11 @@
             <dl class="clearfix">
                 <?php foreach($result as $news): ?>
                     <dt class="news-date"><?php echo $news["create_date"]; ?></dt>
-                    <dd class="news-description"><?php echo mb_substr($news["news_title"], 0, 10); ?></dd>
+                    <?php
+                    $url = 'news.php?id='.$news["news_id"];
+                    $title = mb_substr($news["news_title"], 0, 10);
+                    ?>
+                    <dd class="news-description"><?php echo '<a href="'.$url.'">'.$title.'</a>'; ?></dd>
                 <?php endforeach ?>
             </dl>
             <p class="view-detail text-right"><a href="#">ニュース一覧を見る</a></p>
