@@ -14,7 +14,7 @@
     $kana = $_POST['kana'];
     $email = $_POST['email'];
     $date = $_POST['date'];
-    $motiv = array_key_exists('motivation', $_POST) ? $_POST['motivation'] : '0';
+    $motiv = array_key_exists('motivation', $_POST) ? $_POST['motivation'][0] : '0';
     ?>
     <?php include('header.php'); ?>
 
