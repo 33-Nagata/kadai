@@ -26,6 +26,17 @@
         </div>
         <article class="news-detail">
           <?php
+          // MySQL table format
+          // table name: entry
+          // id          int(11)      AUTO_INCREMENT PRIMARY_KEY
+          // name        varchar(12)
+          // kana        varchar(12)
+          // email       varchar(255)
+          // date        datetime
+          // motiv       int(1)
+          // attend      tinyint(1)
+          // create_date datetime
+          // update_date datetime
           $pdo = new PDO('mysql:host=localhost;dbname=cs_academy;charset=utf8', 'root', '');
           $sql = "INSERT INTO entry (name, kana, email, date, motiv, attend, create_date, update_date) VALUES (:name, :kana, :email, :date, :motiv, :attend, NOW(), NOW())";
           $stmt = $pdo->prepare($sql);
