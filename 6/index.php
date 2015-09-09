@@ -22,6 +22,15 @@
             <span class="section-title__yellow">News</span><span class="section-title-ja text-center">お知らせ・更新情報</span>
         </h2>
         <article class="news-detail">
+            <?php
+            $pdo = new PDO('mysql:host=localhost;dbname=cs_academy;charset=utf8', 'root', '');
+            $sql = "select * from news";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            var_dump($result);
+            $pdo = null;
+            ?>
             <dl class="clearfix">
                 <dt class="news-date">2015.07.12</dt>
                 <dd class="news-description">初日開講しました！</dd>
