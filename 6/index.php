@@ -23,12 +23,12 @@
         </h2>
         <article class="news-detail">
             <?php
-            $pdo = new PDO('mysql:host=localhost;dbname=cs_academy;charset=utf8', 'root', '');
-            $sql = "select news_id, news_title, create_date from news ORDER BY create_date DESC LIMIT 5";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $pdo = null;
+            $options = [
+              'columns' => ['news_id', 'news_title', 'create_date'],
+              'order' => 'create_date',
+              'limit' => '5'
+            ];
+            include('load_news.php');
             ?>
             <dl class="clearfix">
                 <?php foreach($result as $news): ?>

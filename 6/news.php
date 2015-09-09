@@ -15,12 +15,11 @@
         <h2 class="section-title text-center">
             <span class="section-title__yellow">News</span>
             <?php
-            $pdo = new PDO('mysql:host=localhost;dbname=cs_academy;charset=utf8', 'root', '');
-            $sql = "select news_title, news_detail, create_date from news WHERE news_id=".$_GET["id"];
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $pdo = null;
+            $options = [
+              'columns' => ['news_title', 'news_detail', 'create_date'],
+              'where' => 'news_id='.$_GET['id']
+            ];
+            include('load_news.php');
             ?>
             <span class="section-title-ja text-center"><?php echo substr($result[0]["create_date"], 0, 10); ?></span>
         </h2>
