@@ -24,7 +24,7 @@
         <article class="news-detail">
             <?php
             $pdo = new PDO('mysql:host=localhost;dbname=cs_academy;charset=utf8', 'root', '');
-            $sql = "select news_title create_date from news ORDER BY create_date DESC LIMIT 5";
+            $sql = "select news_title, create_date from news ORDER BY create_date DESC LIMIT 5";
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
