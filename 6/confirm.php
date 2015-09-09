@@ -40,13 +40,26 @@
           $pdo = null;
 
           $url = parse_url("localhost/kadai/6/complete.php?id=".$id."&email=".$email);
-          $message = "下記の内容で説明会のお申し込みを受け付けました。\r\n\r\n";
-          $message .= "氏名：".$name."\r\n";
-          $message .= "フリガナ".$kana."\r\n";
-          $message .= "希望日時".$date."\r\n\r\n";
-          $message .= "内容に誤りがなければ下のURLから手続きを完了してください。\r\n";
-          $message .= $url['path']."?".$url['query']."\r\n";
-          if (mail($email, '説明会申込み確認', $message, "From: shinsuke.ngt@gmail.com")):
+          $message = "<html>";
+          $message .= "<head>";
+          $message .= "<title>説明会申込み確認</title>";
+          $message .= "</head>";
+          $message .= "<body>";
+          $message .= "<p>下記の内容で説明会のお申し込みを受け付けました。</p>";
+          $message .= "<table>";
+          $message .= "<tr><th>氏名</th><td>".$name."</td></tr>";
+          $message .= "<tr><th>フリガナ</th><td>".$kana."</td></tr>";
+          $message .= "<tr><th>希望日時</th><td>".$date."</td></tr>";
+          $message .= "</table>";
+          $message .= "<p>";
+          $message .= '<a href="'.$url['path'].'?'.$url['query'].'">';
+          $message .= '内容に誤りがなければこちらから手続きを完了してください。';
+          $message .= '</a>';
+          $message .= "</p>";
+          $headers = "MIME-Version: 1.0\r\n";
+          $headers .= "Content-type: text/html; charset=utf8\r\n";
+          $headers .= "From: shinsuke.ngt@gmail.com";
+          if (mail($email, '説明会申込み確認', $message, $headers)):
           ?>
             <p>下記の内容で確認メールを送信しました。</p>
             <table>
