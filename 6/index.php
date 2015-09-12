@@ -23,8 +23,9 @@
         </h2>
         <article class="news-detail">
             <?php
+            $news_date = 'date_format(create_date, "%Y%.%m%.%d")';
             $options = [
-              'columns' => ['news_id', 'news_title', 'create_date'],
+              'columns' => ['news_id', 'news_title', $news_date],
               'order' => 'create_date',
               'limit' => '5'
             ];
@@ -32,7 +33,7 @@
             ?>
             <dl class="clearfix">
                 <?php foreach($result as $news): ?>
-                    <dt class="news-date"><?php echo $news["create_date"]; ?></dt>
+                    <dt class="news-date"><?php echo $news[$news_date]; ?></dt>
                     <?php
                     $url = 'news.php?id='.$news["news_id"];
                     $title = mb_substr($news["news_title"], 0, 10);
