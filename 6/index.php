@@ -151,7 +151,7 @@
                             <?php
                             include('motivation.php');
                             for($i=1;$i<count($motivations);$i++){
-                                echo '<label for="'.$i.'"><input type="radio" name="motivation[]" value="'.$i.'" id="'.$i.'">'.$motivations[$i].'</label>';
+                                echo '<label for="'.$i.'"><input type="radio" name="motivation" value="'.$i.'" id="'.$i.'">'.$motivations[$i].'</label>';
                             }
                             ?>
                         </td>
