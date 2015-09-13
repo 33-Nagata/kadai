@@ -4,6 +4,7 @@ $sql = "SELECT * FROM news";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$pdo = NULL;
 
 echo "<table>";
 foreach ($results as $news) {
