@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <label for="id">ユーザー名</label>
-  <input id="id" type="text">
-  <label for="psw">パスワード</label>
-  <input id="psw" type="password">
-  <br>
-  <input type="submit" value="ログイン">
+  <form action="login_execute.php" method="get">
+    <label for="id">ユーザー名</label>
+    <input name="id" type="text">
+    <label for="pwd">パスワード</label>
+    <input name="pwd" type="password">
+    <br>
+    <input type="submit" value="ログイン">
+  </form>
 </body>
 </html>
