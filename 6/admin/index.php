@@ -1,7 +1,7 @@
 <?php
 session_start();
-if (!isset($_SESSION['login'])) {
-  // 未ログイン時処理
+if (!isset($_SESSION['login']) || !$_SESSION['login']) {
+  header("Location: login.php");
 }
 ?>
 

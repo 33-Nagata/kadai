@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-var_dump($_GET);
-
 $id = $_GET['id'];
 $pwd = $_GET['pwd'];
 
