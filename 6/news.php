@@ -30,10 +30,32 @@
                 <dd>ニュース詳細：<?php echo $result[0]["news_detail"]; ?></dd>
             </dl>
             <?php
-            if($_GET['id'] > 1){
+            $options = [
+              'columns' => ['news_id']
+            ];
+            include('load_news.php');
+            for($i=0;$i<count($result);$i++){
+              if($result[$i]['news_id'] == $_GET['id']){
+                $before = $i != 0 ? $result[$i-1]['news_id'] : false;
+                break;
+              }
+            }
+            if($before){
               echo '<a class="left" href="news.php?id='.($_GET['id']-1).'">前の記事</a>';
             }
-            echo '<a class="right" href="news.php?id='.($_GET['id']+1).'">次の記事</a>';
+            $options = [
+              'columns' => ['news_id']
+            ];
+            include('load_news.php');
+            for($i=0;$i<count($result);$i++){
+              if($result[$i]['news_id'] == $_GET['id']){
+                $next = $i != count($result)-1 ? $result[$i+1]['news_id'] : false;
+                break;
+              }
+            }
+            if($next){
+              echo '<a class="right" href="news.php?id='.$next.'">次の記事</a>';
+            }
             ?>
         </article>
     </section>
