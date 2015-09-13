@@ -7,6 +7,7 @@
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/news.css">
 </head>
 <body>
     <?php include('header.php'); ?>
@@ -28,7 +29,12 @@
                 <dd class="news-title"><?php echo $result[0]["news_title"]; ?></dd>
                 <dd>ニュース詳細：<?php echo $result[0]["news_detail"]; ?></dd>
             </dl>
-
+            <?php
+            if($_GET['id'] > 1){
+              echo '<a class="left" href="news.php?id='.($_GET['id']-1).'">前の記事</a>';
+            }
+            echo '<a class="right" href="news.php?id='.($_GET['id']+1).'">次の記事</a>';
+            ?>
         </article>
     </section>
 
