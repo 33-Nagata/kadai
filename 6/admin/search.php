@@ -16,8 +16,9 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <p><a href="news_list.php">ニュース一覧</a></p>
-  <p><a href="input.php">ニュース入力ページ</a></p>
-  <p><a href="search.php">ニュース検索ページ</a></p>
+  <form action="search_execute.php" method="get">
+    <input name="keyword" type="text">
+    <input type="submit" value="検索">
+  </form>
 </body>
 </html>
