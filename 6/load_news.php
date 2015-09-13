@@ -1,10 +1,8 @@
 <?php
 $pdo = new PDO('mysql:host=localhost;dbname=cs_academy;charset=utf8', 'root', '');
 $sql = "select ";
-foreach ($options['columns'] as $col) {
-  $sql .= $col.', ';
-}
-$sql = substr($sql, 0, -2).' from news';
+$sql .= implode(', ', $options['columns']);
+$sql .= ' from news';
 if (array_key_exists('where', $options)) {
   $sql .= ' WHERE '.$options['where'];
 }
