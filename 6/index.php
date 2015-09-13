@@ -28,7 +28,8 @@
             $options = [
               'columns' => ['news_id', $news_title, $news_date],
               'order' => 'create_date',
-              'limit' => '5'
+              'limit' => '5',
+              'where' => 'show_flg=1'
             ];
             include('load_news.php');
             ?>

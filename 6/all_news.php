@@ -21,7 +21,8 @@
             $news_date = 'date_format(create_date, "%Y%.%m%.%d")';
             $options = [
               'columns' => ['news_id', $news_title, $news_date],
-              'order' => 'create_date'
+              'order' => 'create_date',
+              'where' => 'show_flg=1'
             ];
             include('load_news.php');
             ?>
