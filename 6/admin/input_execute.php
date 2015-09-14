@@ -3,15 +3,20 @@ $title = $_POST['news_title'];
 $author = $_POST['author'];
 $detail = $_POST['news_detail'];
 
-$pdo = new PDO("mysql:host=localhost;dbname=cs_academy;charset=utf8", "root", "");
-$sql = "INSERT INTO news (news_id, news_title, news_detail, show_flg, author, create_date, update_date) VALUES (NULL, :title, :detail, 1, :author, SYSDATE(), SYSDATE())";
-$stmt = $pdo->prepare($sql);
-$stmt->bindValue(':title', $title, PDO::PARAM_STR);
-$stmt->bindValue(':detail', $detail, PDO::PARAM_STR);
-$stmt->bindValue(':author', $author, PDO::PARAM_STR);
-if ($stmt->execute()) {
-  echo "ニュースを投稿しました";
-} else {
-  echo "ニュースの投稿に失敗しました";
-}
+require_once('../config.php');
+$opt = [
+  'method' => 'insert',
+  'table' => 'news',
+  'columns' => [
+    ['news_id' => NULL],
+    ['news_title' => $title],
+    ['news_detail' => $detail],
+    ['show_flg' => 1],
+    ['author' => $author],
+    ['create_date' => 'SYSDATE()'],
+    ['update_date' => 'SYSDATE()']
+  ]
+];
+include('../functions/controlMySQL.php');
+echo $result ? 'ニュースを投稿しました' : 'ニュースの投稿に失敗しました'
 ?>
