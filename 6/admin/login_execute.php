@@ -6,7 +6,8 @@ $pwd = $_GET['pwd'];
 
 if ($id == 'admin' && $pwd == 'password') {
   $_SESSION['login'] = true;
-  echo "ログイン成功";
+  $_SESSION['message'] = 'ログイン成功';
+  header("Location: index.php");
 } else {
   echo "IDまたはパスワードが間違っています";
 }

@@ -2,6 +2,9 @@
 session_start();
 if (!isset($_SESSION['login']) || !$_SESSION['login']) {
   header("Location: login.php");
+} else {
+  $message = $_SESSION != '' ? '<p>'.$_SESSION['message'].'</p>' : '';
+  $_SESSION['message'] = '';
 }
 ?>
 
