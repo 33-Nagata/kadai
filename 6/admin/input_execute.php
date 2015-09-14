@@ -8,13 +8,13 @@ $opt = [
   'method' => 'insert',
   'table' => 'news',
   'columns' => [
-    ['news_id' => NULL],
-    ['news_title' => $title],
-    ['news_detail' => $detail],
-    ['show_flg' => 1],
-    ['author' => $author],
-    ['create_date' => 'SYSDATE()'],
-    ['update_date' => 'SYSDATE()']
+    'news_id' => NULL,
+    'news_title' => $title,
+    'news_detail' => $detail,
+    'show_flg' => 1,
+    'author' => $author,
+    'create_date' => 'SYSDATE()',
+    'update_date' => 'SYSDATE()'
   ]
 ];
 include('../functions/controlMySQL.php');

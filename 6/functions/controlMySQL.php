@@ -9,6 +9,9 @@ $opt = [
   'method' => 'insert' || 'select' || 'update',
   'table' => table_name,
   'columns' => [
+    // SELECT
+    column_name1, column_name2
+    // INSERT, UPDATE
     column_name1 => value1,
     column_name2 => value2
   ],
@@ -19,12 +22,17 @@ $opt = [
 */
 $method = $opt['method'];
 $table = $opt['table'];
-$column = [];
-$value = [];
-$trueValue = [];
-foreach ($opt['columns'] as $col) {
-  if (is_array($col)) {
-    foreach ($col as $columnName => $columnValue) {
+switch ($method) {
+  case 'select':
+    $column = $opt['columns'];
+    break;
+
+  case 'insert':
+  case 'update':
+    $column = [];
+    $value = [];
+    $trueValue = [];
+    foreach ($opt['columns'] as $columnName => $columnValue) {
       $column[] = $columnName;
       if ($columnValue != NULL) {
         $placeHolder = ':'.$columnName;
@@ -34,9 +42,7 @@ foreach ($opt['columns'] as $col) {
         $value[] = 'NULL';
       }
     }
-  } else {
-    $column[] = $col;
-  }
+    break;
 }
 $where = isset($opt['where']) ? $opt['where'] : false;
 $order = isset($opt['order']) ? $opt['order'] : false;
@@ -49,7 +55,6 @@ switch ($method) {
     $sql .= ' INTO '.$table;
     $sql .= ' ('.implode(', ', $column).')';
     $sql .= ' VALUES ('.implode(', ', $value).')';
-    echo $sql;
     $stmt = $pdo->prepare($sql);
     foreach ($trueValue as $k => $v) {
       $tableName = substr($k, 1, strlen($k) - 1);
@@ -57,6 +62,7 @@ switch ($method) {
     }
     $result = $stmt->execute();
     break;
+
   case 'select':
     $sql = 'SELECT';
     $sql .= ' '.implode(', ', $column);
@@ -68,6 +74,7 @@ switch ($method) {
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     break;
+    
   case 'update':
     if (!$where) {
       $result = false;

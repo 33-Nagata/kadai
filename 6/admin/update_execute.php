@@ -10,11 +10,11 @@ $opt = [
   'method' => 'update',
   'table' => 'news',
   'columns' => [
-    ['news_title' => $title],
-    ['news_detail' => $detail],
-    ['show_flg' => $flg],
-    ['author' => $author],
-    ['update_date' => 'SYSDATE()']
+    'news_title' => $title,
+    'news_detail' => $detail,
+    'show_flg' => $flg,
+    'author' => $author,
+    'update_date' => 'SYSDATE()'
   ],
   'where' => "news_id=$id"
 ];
