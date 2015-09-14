@@ -39,9 +39,7 @@ $author = $results[0]['author'];
     <label for="author">投稿者</label>
     <input name="author" type="text" value="<?php echo $author; ?>">
     <label for="detail">本文</label>
-    <textarea name="detail" cols=40 rows=4>
-      <?php echo $detail; ?>
-    </textarea>
+    <textarea name="detail" cols=40 rows=4><?php echo $detail; ?></textarea>
     <input name="show" type="radio" value="1">表示する
     <input name="show" type="radio" value="0">表示しない
     <input type="submit" value="更新する">
