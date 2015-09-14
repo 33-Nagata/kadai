@@ -70,7 +70,7 @@ switch ($method) {
     break;
   case 'update':
     if (!$where) {
-      $result = 'whereを指定してください';
+      $result = false;
     } else {
       $sql = 'UPDATE';
       $sql .= ' '.$table;
@@ -85,7 +85,7 @@ switch ($method) {
         $tableName = substr($k, 1, strlen($k) - 1);
         $stmt->bindValue($k, $v, $paramType[$tableName]);
       }
-      $result = $stmt->execute() ? '更新しました' : '更新に失敗しました';
+      $result = $stmt->execute();
     }
     break;
 }
