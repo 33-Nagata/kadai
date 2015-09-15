@@ -19,7 +19,7 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <form action="search_execute.php" method="get">
+  <form action="news_list.php" method="get">
     <label for="keyword">キーワード</label>
     <input name="keyword" type="text">
     <label>検索期間</label>
