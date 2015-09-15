@@ -1,3 +1,41 @@
+<?php
+require_once('config.php');
+require_once('functions/controlMySQL.php');
+$opt = [
+  'method' => 'select',
+  'table' => 'news',
+  'columns' => [
+    'news_title AS title',
+    'news_detail AS detail',
+    'date_format(create_date, "%Y%.%m%.%d") AS date'
+  ],
+  'where' => 'news_id='.$_GET['id']
+];
+$result = controlMySQL($opt);
+
+$dateHtml = '<span class="section-title-ja text-center">'.$result[0]['date'].'</span>';
+$titleHtml = '<dd class="news-title">'.$result[0]['title'].'</dd>';
+$detailHtml = '<dd>ニュース詳細：'.$result[0]['detail'].'</dd>';
+
+$opt = [
+  'method' => 'select',
+  'table' => 'news',
+  'columns' => ['news_id AS id'],
+  'order' => 'create_date',
+  'where' => 'show_flg=1'
+];
+$newsList = controlMySQL($opt);
+$prev = '';
+$next = '';
+for($i=0;$i<count($newsList);$i++){
+  if($newsList[$i]['id'] == $_GET['id']){
+    if ($i != 0) $prev = '<a class="left" href="news.php?id='.$newsList[$i-1]['id'].'">前の記事</a>';
+    if ($i != count($newsList)-1) $next = '<a class="right" href="news.php?id='.$newsList[$i+1]['id'].'">次の記事</a>';
+    break;
+  }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,47 +53,18 @@
     <section class="news contents-box">
         <h2 class="section-title text-center">
             <span class="section-title__yellow">News</span>
-            <?php
-            $options = [
-              'columns' => ['news_title', 'news_detail', 'create_date'],
-              'where' => 'news_id='.$_GET['id']
-            ];
-            include('load_news.php');
-            ?>
-            <span class="section-title-ja text-center"><?php echo substr($result[0]["create_date"], 0, 10); ?></span>
+            <?php echo $dateHtml; ?>
         </h2>
         <article class="news-detail">
             <dl class="clearfix">
-                <dd class="news-title"><?php echo $result[0]["news_title"]; ?></dd>
-                <dd>ニュース詳細：<?php echo $result[0]["news_detail"]; ?></dd>
+              <?php
+              echo $titleHtml;
+              echo $detailHtml;
+              ?>
             </dl>
             <?php
-            $options = [
-              'columns' => ['news_id']
-            ];
-            include('load_news.php');
-            for($i=0;$i<count($result);$i++){
-              if($result[$i]['news_id'] == $_GET['id']){
-                $before = $i != 0 ? $result[$i-1]['news_id'] : false;
-                break;
-              }
-            }
-            if($before){
-              echo '<a class="left" href="news.php?id='.($_GET['id']-1).'">前の記事</a>';
-            }
-            $options = [
-              'columns' => ['news_id']
-            ];
-            include('load_news.php');
-            for($i=0;$i<count($result);$i++){
-              if($result[$i]['news_id'] == $_GET['id']){
-                $next = $i != count($result)-1 ? $result[$i+1]['news_id'] : false;
-                break;
-              }
-            }
-            if($next){
-              echo '<a class="right" href="news.php?id='.$next.'">次の記事</a>';
-            }
+            echo $prev;
+            echo $next;
             ?>
         </article>
     </section>
