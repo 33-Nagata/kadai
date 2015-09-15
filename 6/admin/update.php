@@ -9,16 +9,19 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
 
 $id = $_GET['id'];
 
-$pdo = new PDO("mysql:host=localhost;dbname=cs_academy;charset=utf8", "root", "");
-$sql = "SELECT * FROM news WHERE news_id=".$id;
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$pdo = NULL;
+require_once('../config.php');
+$opt = [
+  'method' => 'select',
+  'table' => 'news',
+  'columns' => ['news_title', 'news_detail', 'show_flg', 'author'],
+  'where' => "news_id=$id"
+];
+include('../functions/controlMySQL.php');
 
-$title = $results[0]['news_title'];
-$detail = $results[0]['news_detail'];
-$author = $results[0]['author'];
+$title = $result[0]['news_title'];
+$detail = $result[0]['news_detail'];
+$flg = $result[0]['show_flg'];
+$author = $result[0]['author'];
 ?>
 
 <!DOCTYPE html>
