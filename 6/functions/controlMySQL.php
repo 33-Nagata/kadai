@@ -34,12 +34,14 @@ switch ($method) {
     $trueValue = [];
     foreach ($opt['columns'] as $columnName => $columnValue) {
       $column[] = $columnName;
-      if ($columnValue != NULL) {
+      if ($columnValue == NULL) {
+        $value[] = 'NULL';
+      } elseif (is_string($columnValue) && strtoupper($columnValue) == 'SYSDATE()') {
+        $value[] = 'SYSDATE()';
+      } else {
         $placeHolder = ':'.$columnName;
         $value[] = $placeHolder;
         $trueValue[$placeHolder] = $columnValue;
-      } else {
-        $value[] = 'NULL';
       }
     }
     break;
@@ -74,7 +76,7 @@ switch ($method) {
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     break;
-    
+
   case 'update':
     if (!$where) {
       $result = false;
