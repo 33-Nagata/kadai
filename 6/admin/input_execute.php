@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['login']) || !$_SESSION['login']) {
+  header("Location: login.php");
+}
+
 $title = $_POST['news_title'];
 $author = $_POST['author'];
 $detail = $_POST['news_detail'];
@@ -18,5 +23,7 @@ $opt = [
   ]
 ];
 include('../functions/controlMySQL.php');
-echo $result ? 'ニュースを投稿しました' : 'ニュースの投稿に失敗しました'
+
+$_SESSION['message'] = $result ? 'ニュースを投稿しました' : 'ニュースの投稿に失敗しました';
+header("Location: index.php");
 ?>

@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['login']) || !$_SESSION['login']) {
+  header("Location: login.php");
+}
+
 $keyword = $_GET['keyword'];
 $start = $_GET['date_start'];
 $end = $_GET['date_end'];

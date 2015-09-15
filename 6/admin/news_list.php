@@ -14,6 +14,7 @@ $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $pdo = NULL;
 
+echo $message;
 echo "<table>";
 foreach ($results as $news) {
   echo "<tr>";

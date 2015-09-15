@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['login']) || !$_SESSION['login']) {
+  header("Location: login.php");
+}
+
 $id = $_POST['id'];
 $title = $_POST['title'];
 $author = $_POST['author'];
@@ -19,5 +24,7 @@ $opt = [
   'where' => "news_id=$id"
 ];
 include('../functions/controlMySQL.php');
-echo $result ? 'ニュースを更新しました' : 'ニュースの更新に失敗しました';
+
+$_SESSION['message'] = $result ? 'ニュースを更新しました' : 'ニュースの更新に失敗しました';
+header("Location: news_list.php");
 ?>
