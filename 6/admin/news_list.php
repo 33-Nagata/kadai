@@ -7,11 +7,13 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
   $_SESSION['message'] = '';
 }
 
+require_once('../config.php');
+require_once('../functions/controlMySQL.php');
 $keyword = array_key_exists('keyword', $_GET) ? $_GET['keyword'] : '';
 $start = array_key_exists('date_start', $_GET) ? $_GET['date_start'] : '';
 $end = array_key_exists('date_end', $_GET) ? $_GET['date_end'] : '';
+$limit = $sqlConfig['limit'];
 
-require_once('../config.php');
 $opt = [
   'method' => 'select',
   'table' => 'news',
@@ -28,14 +30,14 @@ if ($end != '') {
   $opt['where'] = array_key_exists('where', $opt) ? $opt['where'].' && ' : '';
   $opt['where'] .= 'create_date<="'.$end.' 23:59:59"';
 }
-include('../functions/controlMySQL.php');
+$result = controlMySQL($opt);
 $cnt = $result[0]['count'];
 
 $opt['columns'] = ['news_id AS id','news_title AS title','author'];
 $opt['order'] = 'create_date';
-$opt['limit'] = array_key_exists('limit', $_GET) ? $_GET['limit'] : $sqlConfig['limit'];
+$opt['limit'] = array_key_exists('limit', $_GET) ? $_GET['limit'] : $limit;
 $opt['offset'] = array_key_exists('offset', $_GET) ? $_GET['offset'] : 0;
-include('../functions/controlMySQL.php');
+$result = controlMySQL($opt);
 
 $table = "<table>";
 foreach ($result as $news) {
@@ -49,7 +51,7 @@ $table .= "</table>";
 
 $prev = '';
 if ($opt['offset'] > 0) {
-  $rest = min($sqlConfig['limit'], $opt['offset']);
+  $rest = min($limit, $opt['offset']);
   $prev = '<a href="news_list.php?';
   $prev .= $keyword != '' ? 'keyword='.$keyword.'&' : '';
   $prev .= $start != '' ? 'date_start='.$start.'&' : '';
@@ -60,13 +62,14 @@ if ($opt['offset'] > 0) {
 }
 
 $next = '';
-if ($cnt - $opt['offset'] - $sqlConfig['limit'] > 0) {
-  $rest = min($sqlConfig['limit'], $cnt - $opt['offset'] - $sqlConfig['limit']);
+if ($cnt - $opt['offset'] - $limit > 0) {
+  $rest = min($limit, $cnt - $opt['offset'] - $limit);
   $next = '<a href="news_list.php?';
   $next .= $keyword != '' ? 'keyword='.$keyword.'&' : '';
   $next .= $start != '' ? 'date_start='.$start.'&' : '';
   $next .= $end != '' ? 'date_end='.$end.'&' : '';
-  $next .= 'offset='.($opt['offset']+$sqlConfig['limit']);
+  $next .= 'limit='.$rest.'&';
+  $next .= 'offset='.($opt['offset']+$opt['limit']);
   $next .= '">次の'.$rest.'件</a>';
 }
 

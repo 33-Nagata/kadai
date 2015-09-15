@@ -10,13 +10,14 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
 $id = $_GET['id'];
 
 require_once('../config.php');
+require_once('../functions/controlMySQL.php');
 $opt = [
   'method' => 'select',
   'table' => 'news',
   'columns' => ['news_title', 'news_detail', 'show_flg', 'author'],
   'where' => "news_id=$id"
 ];
-include('../functions/controlMySQL.php');
+$result = controlMySQL($opt);
 
 $title = $result[0]['news_title'];
 $detail = $result[0]['news_detail'];

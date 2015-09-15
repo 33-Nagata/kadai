@@ -11,6 +11,7 @@ $detail = $_POST['detail'];
 $flg = $_POST['show'];
 
 require_once('../config.php');
+require_once('../functions/controlMySQL.php');
 $opt = [
   'method' => 'update',
   'table' => 'news',
@@ -23,8 +24,7 @@ $opt = [
   ],
   'where' => "news_id=$id"
 ];
-include('../functions/controlMySQL.php');
 
-$_SESSION['message'] = $result ? 'ニュースを更新しました' : 'ニュースの更新に失敗しました';
+$_SESSION['message'] = controlMySQL($opt) ? 'ニュースを更新しました' : 'ニュースの更新に失敗しました';
 header("Location: news_list.php");
 ?>

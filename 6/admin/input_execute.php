@@ -9,6 +9,7 @@ $author = $_POST['author'];
 $detail = $_POST['news_detail'];
 
 require_once('../config.php');
+require_once('../functions/controlMySQL.php');
 $opt = [
   'method' => 'insert',
   'table' => 'news',
@@ -22,8 +23,6 @@ $opt = [
     'update_date' => 'SYSDATE()'
   ]
 ];
-include('../functions/controlMySQL.php');
-
-$_SESSION['message'] = $result ? 'ニュースを投稿しました' : 'ニュースの投稿に失敗しました';
+$_SESSION['message'] = controlMySQL($opt) ? 'ニュースを投稿しました' : 'ニュースの投稿に失敗しました';
 header("Location: index.php");
 ?>
