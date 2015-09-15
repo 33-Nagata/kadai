@@ -49,6 +49,7 @@ switch ($method) {
 $where = isset($opt['where']) ? $opt['where'] : false;
 $order = isset($opt['order']) ? $opt['order'] : false;
 $limit = isset($opt['limit']) ? $opt['limit'] : false;
+$offset = isset($opt['offset']) ? $opt['offset'] : false;
 
 $pdo = new PDO('mysql:host='.$host.';dbname='.$db.';charset='.$char, $usr, $pwd);
 switch ($method) {
@@ -71,7 +72,8 @@ switch ($method) {
     $sql .= ' FROM '.$table;
     $sql .= $where ? ' WHERE '.$where : '';
     $sql .= $order ? ' ORDER BY '.$order.' DESC' : '';
-    $sql .= $limit ? 'LIMIT '.$limit : '';
+    $sql .= $limit ? ' LIMIT '.$limit : '';
+    $sql .= $offset ? ' OFFSET '.$offset : '';
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

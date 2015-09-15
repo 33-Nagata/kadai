@@ -5,12 +5,7 @@ $sqlConfig = [
   'charset' => 'utf8',
   'user' => 'root',
   'password' => '',
-  // 'method' => 'insert' || 'select' || 'update',
-  // 'table' => table_name,
-  // 'columns' => [
-  //   column_name1 => value1,
-  //   column_name2 => value2
-  // ]
+  'limit' => 5
 ];
 $paramType = [
   'create_date' => PDO::PARAM_STR,

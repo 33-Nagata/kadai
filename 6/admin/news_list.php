@@ -15,8 +15,13 @@ require_once('../config.php');
 $opt = [
   'method' => 'select',
   'table' => 'news',
-  'columns' => ['news_id','news_title','author'],
+  'columns' => ['count(news_id) AS count']
 ];
+include('../functions/controlMySQL.php');
+$cnt = $result[0]['count'];
+
+$opt['columns'] = ['news_id AS id','news_title AS title','author'];
+$opt['order'] = 'create_date';
 if ($keyword != '') {
   $opt['where'] = "(news_title LIKE '%{$keyword}%' || news_detail LIKE '%{$keyword}%')";
 }
@@ -26,18 +31,47 @@ if ($start != '') {
 }
 if ($end != '') {
   $opt['where'] = array_key_exists('where', $opt) ? $opt['where'].' && ' : '';
-  $opt['where'] .= 'create_date<="'.$end.'23:59:59"';
+  $opt['where'] .= 'create_date<="'.$end.' 23:59:59"';
 }
+$opt['limit'] = array_key_exists('limit', $_GET) ? $_GET['limit'] : $sqlConfig['limit'];
+$opt['offset'] = array_key_exists('offset', $_GET) ? $_GET['offset'] : 0;
 include('../functions/controlMySQL.php');
 
-echo $message;
-echo "<table>";
+$table = "<table>";
 foreach ($result as $news) {
-  echo "<tr>";
-  echo "<th>".$news['news_title']."</th>";
-  echo "<td>".$news['author']."</td>";
-  echo '<td><a href="update.php?id='.$news['news_id'].'">内容を変更する</a></td>';
-  echo "</tr>";
+  $table .= "<tr>";
+  $table .= "<th>".$news['title']."</th>";
+  $table .= "<td>".$news['author']."</td>";
+  $table .= '<td><a href="update.php?id='.$news['id'].'">内容を変更する</a></td>';
+  $table .= "</tr>";
 }
-echo "</table>";
+$table .= "</table>";
+
+$prev = '';
+if ($opt['offset'] > 0) {
+  $rest = min($sqlConfig['limit'], $opt['offset']);
+  $prev = '<a href="news_list.php?';
+  $prev .= $keyword != '' ? 'keyword='.$keyword.'&' : '';
+  $prev .= $start != '' ? 'date_start='.$start.'&' : '';
+  $prev .= $end != '' ? 'date_end='.$end.'&' : '';
+  $prev .= 'limit='.$rest.'&';
+  $prev .= 'offset='.($opt['offset'] - $rest);
+  $prev .= '">前の'.$rest.'件</a>';
+}
+
+$next = '';
+if ($cnt - $opt['offset'] - $sqlConfig['limit'] > 0) {
+  $rest = min($sqlConfig['limit'], $cnt - $opt['offset'] - $sqlConfig['limit']);
+  $next = '<a href="news_list.php?';
+  $next .= $keyword != '' ? 'keyword='.$keyword.'&' : '';
+  $next .= $start != '' ? 'date_start='.$start.'&' : '';
+  $next .= $end != '' ? 'date_end='.$end.'&' : '';
+  $next .= 'offset='.($opt['offset']+$sqlConfig['limit']);
+  $next .= '">次の'.$rest.'件</a>';
+}
+
+echo $message;
+echo $table;
+echo $prev;
+echo $next;
 ?>
