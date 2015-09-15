@@ -17,11 +17,6 @@ $opt = [
   'table' => 'news',
   'columns' => ['count(news_id) AS count']
 ];
-include('../functions/controlMySQL.php');
-$cnt = $result[0]['count'];
-
-$opt['columns'] = ['news_id AS id','news_title AS title','author'];
-$opt['order'] = 'create_date';
 if ($keyword != '') {
   $opt['where'] = "(news_title LIKE '%{$keyword}%' || news_detail LIKE '%{$keyword}%')";
 }
@@ -33,6 +28,11 @@ if ($end != '') {
   $opt['where'] = array_key_exists('where', $opt) ? $opt['where'].' && ' : '';
   $opt['where'] .= 'create_date<="'.$end.' 23:59:59"';
 }
+include('../functions/controlMySQL.php');
+$cnt = $result[0]['count'];
+
+$opt['columns'] = ['news_id AS id','news_title AS title','author'];
+$opt['order'] = 'create_date';
 $opt['limit'] = array_key_exists('limit', $_GET) ? $_GET['limit'] : $sqlConfig['limit'];
 $opt['offset'] = array_key_exists('offset', $_GET) ? $_GET['offset'] : 0;
 include('../functions/controlMySQL.php');
