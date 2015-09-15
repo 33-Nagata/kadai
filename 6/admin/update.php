@@ -43,8 +43,8 @@ $author = $result[0]['author'];
     <input name="author" type="text" value="<?php echo $author; ?>">
     <label for="detail">本文</label>
     <textarea name="detail" cols=40 rows=4><?php echo $detail; ?></textarea>
-    <input name="show" type="radio" value="1">表示する
-    <input name="show" type="radio" value="0">表示しない
+    <input name="show" type="radio" value="1"<?php if($flg) echo 'checked="checked"'; ?>>表示する
+    <input name="show" type="radio" value="0"<?php if(!$flg) echo 'checked="checked"'; ?>>表示しない
     <input type="submit" value="更新する">
   </form>
 </body>
