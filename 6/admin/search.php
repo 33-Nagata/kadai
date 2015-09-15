@@ -20,7 +20,10 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
 </head>
 <body>
   <form action="search_execute.php" method="get">
+    <label for="keyword">キーワード</label>
     <input name="keyword" type="text">
+    <label>検索期間</label>
+    <input name="date_start" type="date">~<input name="date_end" type="date">
     <input type="submit" value="検索">
   </form>
 </body>
