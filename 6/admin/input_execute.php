@@ -8,7 +8,6 @@ $title = $_POST['news_title'];
 $author = $_POST['author'];
 $detail = $_POST['news_detail'];
 
-require_once('../config.php');
 require_once('../functions/controlMySQL.php');
 $opt = [
   'method' => 'insert',

@@ -9,7 +9,6 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
 
 $id = $_GET['id'];
 
-require_once('../config.php');
 require_once('../functions/controlMySQL.php');
 $opt = [
   'method' => 'select',

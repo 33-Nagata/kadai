@@ -7,7 +7,6 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
   $_SESSION['message'] = '';
 }
 
-require_once('../config.php');
 require_once('../functions/controlMySQL.php');
 $keyword = array_key_exists('keyword', $_GET) ? $_GET['keyword'] : '';
 $start = array_key_exists('date_start', $_GET) ? $_GET['date_start'] : '';

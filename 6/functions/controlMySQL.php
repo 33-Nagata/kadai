@@ -1,4 +1,6 @@
 <?php
+require_once('../config.php');
+
 function controlMySQL ($opt) {
   global $sqlConfig;
   $host = $sqlConfig['host'];

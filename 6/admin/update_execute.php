@@ -10,7 +10,6 @@ $author = $_POST['author'];
 $detail = $_POST['detail'];
 $flg = $_POST['show'];
 
-require_once('../config.php');
 require_once('../functions/controlMySQL.php');
 $opt = [
   'method' => 'update',
