@@ -10,11 +10,12 @@ $opt = [
   'method' => 'select',
   'table' => 'user',
   'columns' => ['email'],
-  'where' => "email={$_POST['email']}"
+  'where' => "email='{$email}'"
 ];
 $result = controlMySQL($opt);
-if (count($result) == 0) {
-  header('Location: register.php?error=0');
+if (count($result) != 0) {
+  $_SESSION['message'] = '<p class="message failure">既に登録されているメールアドレスです</p>';
+  header('Location: login.php');
   exit;
 }
 
@@ -31,10 +32,9 @@ $opt = [
 if (controlMySQL($opt)) {
   $_SESSION['login'] = true;
   $_SESSION['message'] = '<p class="message success">登録完了</p>';
-  echo "登録成功";
-  // header('index.php');
+  header('index.php');
 } else {
-  header('Location: register.php?error=1');
+  header('Location: register.php?error=0');
   exit;
 }
 ?>

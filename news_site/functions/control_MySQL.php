@@ -4,7 +4,7 @@ function controlMySQL ($opt) {
   /*
   $opt = [
     'method' => 'insert' || 'select' || 'update',
-    'table' => [table_name1, table_name2],
+    'tables' => [table_name1, table_name2],
     'columns' => [
       // SELECT
       column_name1, column_name2
@@ -18,7 +18,7 @@ function controlMySQL ($opt) {
   ];
   */
   $method = $opt['method'];
-  $table = is_array($opt['table']) ? implode(', ', $opt['table']) : $opt['table'];
+  $table = is_array($opt['tables']) ? implode(', ', $opt['tables']) : $opt['tables'];
   switch ($method) {
     case 'select':
       $column = $opt['columns'];

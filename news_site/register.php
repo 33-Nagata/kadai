@@ -3,9 +3,6 @@ if (array_key_exists('error', $_GET)) {
   $error_message = '<p class="error message">';
   switch ($_GET['error']) {
     case '0':
-      $error_message .= '既に登録されているメールアドレスです';
-      break;
-    case '1':
       $error_message .= '登録に失敗しました';
       break;
     default:
