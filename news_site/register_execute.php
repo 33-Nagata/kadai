@@ -5,10 +5,11 @@ include_once('functions/control_MySQL.php');
 $name = $_POST['name'];
 $email = $_POST['email'];
 $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+$photo = file_get_contents($_FILES['photo']['tmp_name']);
 
 $opt = [
   'method' => 'select',
-  'table' => 'user',
+  'tables' => ['user'],
   'columns' => ['email'],
   'where' => "email='{$email}'"
 ];
@@ -21,12 +22,13 @@ if (count($result) != 0) {
 
 $opt = [
   'method' => 'insert',
-  'table' => 'user',
+  'tables' => ['user'],
   'columns' => [
     'id' => NULL,
     'name' => $name,
     'email' => $email,
-    'password' => $password
+    'password' => $password,
+    'photo' => $photo
     ]
 ];
 if (controlMySQL($opt)) {

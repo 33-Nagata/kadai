@@ -1,4 +1,7 @@
 <?php
+session_start();
+session_destroy();
+
 if (array_key_exists('error', $_GET)) {
   $error_message = '<p class="error message">';
   switch ($_GET['error']) {
@@ -10,6 +13,8 @@ if (array_key_exists('error', $_GET)) {
       break;
   }
   $error_message .= '</p>';
+} else {
+  $error_message = "";
 }
 ?>
 
@@ -25,7 +30,7 @@ if (array_key_exists('error', $_GET)) {
 <body>
   <div class="container">
     <?php echo $error_message; ?>
-    <form class="form-signin" action="register_execute.php" method="post">
+    <form class="form-signin" action="register_execute.php" method="post" enctype="multipart/form-data">
       <label for="name">名前</label>
       <input name="name" type="text">
       <label for="email">メールアドレス</label>
@@ -34,6 +39,8 @@ if (array_key_exists('error', $_GET)) {
       <input name="password" type="password">
       <label for="confirm">パスワード(確認用)</label>
       <input name="confirm" type="password">
+      <label for="photo">プロフィール画像</label>
+      <input name="photo" type="file">
       <input id="submit" type="submit" value="登録" disabled="disabled">
       <button id="clear">クリア</button>
     </form>
