@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+$message = $_SESSION != '' ? '<p>'.$_SESSION['message'].'</p>' : '';
+$_SESSION['message'] = '';
+
 $_SESSION['login'] = false;
 ?>
 

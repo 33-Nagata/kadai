@@ -9,6 +9,7 @@ if ($id == 'admin' && $pwd == 'password') {
   $_SESSION['message'] = 'ログイン成功';
   header("Location: index.php");
 } else {
-  echo "IDまたはパスワードが間違っています";
+  $_SESSION['message'] =  "IDまたはパスワードが間違っています";
+  header("Location: login.php");
 }
 ?>
