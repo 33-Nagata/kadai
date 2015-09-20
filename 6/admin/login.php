@@ -18,6 +18,7 @@ $_SESSION['login'] = false;
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+  <?php echo $message; ?>
   <form action="login_execute.php" method="post">
     ログイン名: <input type="text" name="name" value="" />
   	パスワード: <input type="password" name="password" value="" />
