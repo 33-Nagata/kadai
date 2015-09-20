@@ -1,5 +1,4 @@
 <?php
-session_start();
 if (!isset($_SESSION['login']) || !$_SESSION['login']) {
   header("Location: login.php");
 } else {
@@ -20,8 +19,10 @@ if (!isset($_SESSION['login']) || !$_SESSION['login']) {
 </head>
 <body>
   <?php echo $message; ?>
-  <p><a href="news_list.php">ニュース一覧</a></p>
-  <p><a href="input.php">ニュース入力ページ</a></p>
-  <p><a href="search.php">ニュース検索ページ</a></p>
+  <ul>
+  <li><a href="input.php">ニュース新規追加</a></li>
+  <li><a href="news_list.php">ニュース一覧（更新はここから）</a></li>
+  <li><a href="search_ps.php">ニュース検索</a></li>
+  </ul>
 </body>
 </html>

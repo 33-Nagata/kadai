@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-$id = $_GET['id'];
-$pwd = $_GET['pwd'];
+$id = $_POST['name'];
+$pwd = $_POST['password'];
 
 if ($id == 'admin' && $pwd == 'password') {
   $_SESSION['login'] = true;

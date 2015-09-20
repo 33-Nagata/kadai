@@ -15,11 +15,9 @@ $_SESSION['login'] = false;
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <form action="login_execute.php" method="get">
-    <label for="id">ユーザー名</label>
-    <input name="id" type="text">
-    <label for="pwd">パスワード</label>
-    <input name="pwd" type="password">
+  <form action="login_execute.php" method="post">
+    ログイン名: <input type="text" name="name" value="" />
+  	パスワード: <input type="password" name="password" value="" />
     <br>
     <input type="submit" value="ログイン">
   </form>
