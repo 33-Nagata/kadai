@@ -1,3 +1,21 @@
+<?php
+if (array_key_exists('error', $_GET)) {
+  $error_message = '<p class="error message">';
+  switch ($_GET['error']) {
+    case '0':
+      $error_message .= '既に登録されているメールアドレスです';
+      break;
+    case '1':
+      $error_message .= '登録に失敗しました';
+      break;
+    default:
+      $error_message .= '未知のエラーです';
+      break;
+  }
+  $error_message .= '</p>';
+}
+?>
+
 <!DOCTYPE html>
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -9,11 +27,12 @@
 </head>
 <body>
   <div class="container">
+    <?php echo $error_message; ?>
     <form class="form-signin" action="register_execute.php" method="post">
       <label for="name">名前</label>
       <input name="name" type="text">
       <label for="email">メールアドレス</label>
-      <input name="email" type="text">
+      <input name="email" type="email">
       <label for="password">パスワード</label>
       <input name="password" type="password">
       <label for="confirm">パスワード(確認用)</label>
