@@ -9,7 +9,7 @@ if ($id == 0) {
     'method' => 'select',
     'tables' => ['news', 'user'],
     'columns' => ['news.title', 'news.create_date', 'user.name'],
-    'where' => 'news.author_id=user.id',
+    'where' => 'user.id=news.author_id & news.show_flg=1',
     'order' => 'news.create_date',
     'limit' => $NEWS_PER_PAGE,
     'offset' => $NEWS_PER_PAGE * ($page - 1)
