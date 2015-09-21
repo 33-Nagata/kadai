@@ -11,4 +11,8 @@ if (array_key_exists('message', $_SESSION)) {
   $message = $_SESSION['message'];
   $_SESSION['message'] = '';
 }
+
+function h($str) {
+  return htmlspecialchars($str);
+}
 ?>

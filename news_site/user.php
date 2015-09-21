@@ -2,12 +2,12 @@
 require('common.php');
 require_once('functions/control_MySQL.php');
 
-$id = array_key_exists('id', $_GET) ? $_GET['id'] : 0;
+$request_id = $_GET['id'];
 $opt = [
   'method' => 'select',
   'tables' => ['user'],
   'columns' => ['*'],
-  'where' => "id='{$_GET['id']}'"
+  'where' => "id='{$request_id}'"
 ];
 $result = controlMySQL($opt);
 if (count($result) == 0) {
@@ -15,7 +15,7 @@ if (count($result) == 0) {
 } else {
   $user = $result[0];
 }
-$owner = $id == $user['id'] ? true : false;
+$owner = $id == $request_id ? true : false;
 ?>
 
 <!DOCTYPE html>
@@ -31,9 +31,9 @@ $owner = $id == $user['id'] ? true : false;
 <body>
   <?php
   echo $message;
-  echo '<p>ユーザー名：'.$user['name'].'</p>';
-  if ($owner) echo '<p>メールアドレス：'.$user['email'].'</p>';
-  echo "<p>プロフィール写真：<img src='get_img.php?table=user&id={$id}' /></p>";
+  echo '<p>ユーザー名：'.h($user['name']).'</p>';
+  if ($owner) echo '<p>メールアドレス：'.h($user['email']).'</p>';
+  echo "<p>プロフィール写真：<img src='get_img.php?table=user&id={$request_id}' /></p>";
   echo "<興味・関心>：{$user['vector']}";
   ?>
 </body>
