@@ -1,16 +1,10 @@
 <?php
-session_start();
+require('common.php');
 require_once('functions/control_MySQL.php');
 $NEWS_PER_PAGE = 10;
-$login = isset($_SESSION['login']) && $_SESSION['login'] == true ? true : false;
 $page = array_key_exists('page', $_GET) ? $_GET['page'] : 1;
-$message = '';
-if (array_key_exists('message', $_SESSION)) {
-  $message = $_SESSION['message'];
-  $_SESSION['message'] = '';
-}
 
-if (!$login) {
+if ($id == 0) {
   $opt = [
     'method' => 'select',
     'tables' => ['news', 'user'],

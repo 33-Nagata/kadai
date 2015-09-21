@@ -8,7 +8,7 @@ $password = $_POST['password'];
 $opt = [
   'method' => 'select',
   'tables' => ['user'],
-  'columns' => ['email', 'password'],
+  'columns' => ['id', 'email', 'password'],
   'where' => "email='{$email}'"
 ];
 $data = controlMySQL($opt);
@@ -18,7 +18,9 @@ if (count($data) == 0) {
   $_SESSION['message'] = $error_message;
 } else {
   foreach ($data as $user) {
-    if (!password_verify($password, $user['password'])) {
+    if (password_verify($password, $user['password'])) {
+      $id = $user['id'];
+    } else {
       $_SESSION['message'] = $error_message;
     }
   }
@@ -28,5 +30,6 @@ if ($error_message == $_SESSION['message']) {
   exit;
 }
 $_SESSION['login'] = true;
+$_SESSION['id'] = $id;
 header('Location: index.php');
 ?>
