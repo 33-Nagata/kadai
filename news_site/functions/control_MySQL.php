@@ -14,7 +14,8 @@ function controlMySQL ($opt) {
     ],
     'where' => 'where statement',
     'order' => 'column_name',
-    'limit' => NUM
+    'limit' => NUM,
+    'offset' => NUM
   ];
   */
   $method = $opt['method'];
