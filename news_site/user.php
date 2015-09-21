@@ -33,7 +33,7 @@ $owner = $id == $user['id'] ? true : false;
   echo $message;
   echo '<p>ユーザー名：'.$user['name'].'</p>';
   if ($owner) echo '<p>メールアドレス：'.$user['email'].'</p>';
-  echo "<p>プロフィール写真：<img src='http://127.0.0.1/kadai/news_site/get_img.php?table=user&id={$id}' /></p>";
+  echo "<p>プロフィール写真：<img src='get_img.php?table=user&id={$id}' /></p>";
   echo "<興味・関心>：{$user['vector']}";
   ?>
 </body>

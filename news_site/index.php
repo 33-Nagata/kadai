@@ -8,8 +8,8 @@ if ($id == 0) {
   $opt = [
     'method' => 'select',
     'tables' => ['news', 'user'],
-    'columns' => ['news.title', 'news.create_date', 'user.name'],
-    'where' => 'user.id=news.author_id & news.show_flg=1',
+    'columns' => ['news.id', 'news.title', 'news.create_date', 'user.name'],
+    'where' => 'user.id=news.author_id AND news.show_flg=1',
     'order' => 'news.create_date',
     'limit' => $NEWS_PER_PAGE,
     'offset' => $NEWS_PER_PAGE * ($page - 1)
@@ -44,7 +44,7 @@ if ($id == 0) {
     <tbody>
       <?php foreach ($all_news as $news): ?>
       <tr>
-        <td><?php echo $news['title'] ?></td>
+        <td><?php echo "<a href='news.php?id={$news['id']}'>{$news['title']}</a>" ?></td>
         <td><?php echo $news['create_date'] ?></td>
         <td><?php echo $news['name'] ?></td>
       </tr>

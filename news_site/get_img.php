@@ -11,9 +11,9 @@ $opt = [
 ];
 $data = controlMySQL($opt);
 if (count($data) == 0) {
-  echo "データが存在しません";;
+  // echo "データが存在しません";;
 } else {
-  // header("Content-Type: image/jpeg");
+  header("Content-Type: image/jpeg");
   echo $data[0]['photo'];
 }
 ?>
