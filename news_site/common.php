@@ -13,6 +13,6 @@ if (array_key_exists('message', $_SESSION)) {
 }
 
 function h($str) {
-  return htmlspecialchars($str);
+  return htmlspecialchars($str, ENT_QUOTES);
 }
 ?>

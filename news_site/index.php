@@ -44,9 +44,9 @@ if ($id == 0) {
     <tbody>
       <?php foreach ($all_news as $news): ?>
       <tr>
-        <td><?php echo "<a href='news.php?id={$news['id']}'>{$news['title']}</a>" ?></td>
+        <td><?php echo "<a href='news.php?id={$news['id']}'>".h($news['title'])."</a>" ?></td>
         <td><?php echo $news['create_date'] ?></td>
-        <td><?php echo $news['name'] ?></td>
+        <td><?php echo h($news['name']) ?></td>
       </tr>
       <?php endforeach ?>
     </tbody>

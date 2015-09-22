@@ -7,18 +7,21 @@ $password = '';
 $limit = 5;
 
 $paramType = [
+  'photo' => PDO::PARAM_STR,
+  'vector' => PDO::PARAM_STR,
   'create_date' => PDO::PARAM_STR,
   'update_date' => PDO::PARAM_STR,
   // user
   'name' => PDO::PARAM_STR,
   'email' => PDO::PARAM_STR,
   'password' => PDO::PARAM_STR,
-  'photo' => PDO::PARAM_STR,
-  'vector' => PDO::PARAM_STR,
   //news
   'title' => PDO::PARAM_STR,
-  'detail' => PDO::PARAM_STR,
+  'author_id' => PDO::PARAM_STR,
+  'article' => PDO::PARAM_STR,
+  'location' => PDO::PARAM_STR,
   'show_flg' => PDO::PARAM_INT,
-  'user_id' => PDO::PARAM_STR,
+  //dictionary
+  'word' => PDO::PARAM_STR,
 ];
 ?>

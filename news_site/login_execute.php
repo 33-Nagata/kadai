@@ -29,7 +29,6 @@ if ($error_message == $_SESSION['message']) {
   header('Location: login.php');
   exit;
 }
-$_SESSION['login'] = true;
 $_SESSION['id'] = $id;
 header('Location: index.php');
 ?>

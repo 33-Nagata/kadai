@@ -1,6 +1,6 @@
 <?php
 function controlMySQL ($opt) {
-  require("/Applications/XAMPP/htdocs/kadai/news_site/mysql_config.php");
+  require("mysql_config.php");
   /*
   $opt = [
     'method' => 'insert' || 'select' || 'update',
@@ -36,6 +36,12 @@ function controlMySQL ($opt) {
           $value[] = 'NULL';
         } elseif (is_string($columnValue) && strtoupper($columnValue) == 'SYSDATE()') {
           $value[] = 'SYSDATE()';
+        } elseif (strpos($columnValue, 'GeomFromText') !== false) {
+          $placeHolder = ':'.$columnName;
+          $value[] = 'GeomFromText('.$placeHolder.')';
+          $start = strlen('GeomFromText("');
+          $length = strlen($columnValue) - strlen('GeomFromText("")');
+          $trueValue[$placeHolder] = substr($columnValue, $start, $length);
         } else {
           $placeHolder = ':'.$columnName;
           $value[] = $placeHolder;
@@ -61,7 +67,10 @@ function controlMySQL ($opt) {
         $tableName = substr($k, 1, strlen($k) - 1);
         $stmt->bindValue($k, $v, $paramType[$tableName]);
       }
-      return $stmt->execute();
+      $last_id = false;
+      if ($stmt->execute()) $last_id = $stmt->lastInsertId();
+      $pdo = NULL;
+      return $last_id;
       break;
 
     case 'select':
@@ -74,11 +83,14 @@ function controlMySQL ($opt) {
       $sql .= $offset ? ' OFFSET '.$offset : '';
       $stmt = $pdo->prepare($sql);
       $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $pdo = NULL;
+      return $res;
       break;
 
     case 'update':
       if (!$where) {
+        $pdo = NULL;
         return false;
       } else {
         $sql = 'UPDATE';
@@ -94,10 +106,46 @@ function controlMySQL ($opt) {
           $tableName = substr($k, 1, strlen($k) - 1);
           $stmt->bindValue($k, $v, $paramType[$tableName]);
         }
-        return $stmt->execute();
+        $res = $stmt->execute();
+        $pdo = NULL;
+        return $res;
       }
       break;
   }
   $pdo = null;
+}
+
+function insertMultiColumns($opt) {
+  require("mysql_config.php");
+  /*
+  $opt = [
+    'table' => table_name,
+    'columns' => [column_name1, column_name2],
+    'values' => [
+      [value1, value2],
+      [value3, value4]
+    ]
+  ];
+  */
+  $table = $opt['table'];
+  $columns = $opt['columns'];
+  $values = $opt['values'];
+  $pdo = new PDO('mysql:host='.$host.';dbname='.$dbname.';charset='.$charset, $user, $password);
+  $sql = "INSERT INTO {$table} (".implode(', ', $columns).") VALUES ";
+  $set = [];
+  foreach ($values as $index => $value) {
+    // (:'column1'1, :'column2'1)
+    // (:'column1'2, :'column2'2)
+    $set[] = '(:'.implode("{$index}, :", $columns).$index.')';
+  }
+  $sql .= implode(', ', $set);
+  $stmt = $pdo->prepare($sql);
+  foreach ($values as $i => $value) {
+    foreach ($columns as $j => $column) {
+      $placeHolder = ':'.$column.$i;
+      $stmt->bindValue($placeHolder, $value[$j], $paramType[$column]);
+    }
+  }
+  $stmt->execute();
 }
 ?>
