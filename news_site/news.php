@@ -35,10 +35,10 @@ $is_owner = $id == $author_id;
 </head>
 <body>
   <?php echo $message; ?>
-  <h1><?php echo $title; ?></h1>
+  <h1><?php echo h($title); ?></h1>
   <img src="<?php echo $photo_src; ?>" />
-  <p><?php echo $author; ?></p>
-  <article><?php echo $article; ?></article>
+  <p><?php echo h($author); ?></p>
+  <article><?php echo h($article); ?></article>
   <a href="index.php">ニュース一覧へ戻る</a>
 </body>
 </html>

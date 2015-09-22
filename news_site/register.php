@@ -19,6 +19,7 @@ if (array_key_exists('error', $_GET)) {
 ?>
 
 <!DOCTYPE html>
+<html>
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
@@ -32,13 +33,13 @@ if (array_key_exists('error', $_GET)) {
     <?php echo $error_message; ?>
     <form class="form-signin" action="register_execute.php" method="post" enctype="multipart/form-data">
       <label for="name">名前</label>
-      <input name="name" type="text">
+      <input name="name" type="text" required>
       <label for="email">メールアドレス</label>
-      <input name="email" type="email">
+      <input name="email" type="email" required>
       <label for="password">パスワード</label>
-      <input name="password" type="password">
+      <input name="password" type="password" required>
       <label for="confirm">パスワード(確認用)</label>
-      <input name="confirm" type="password">
+      <input name="confirm" type="password" required>
       <label for="photo">プロフィール画像</label>
       <input name="photo" type="file">
       <input id="submit" type="submit" value="登録" disabled="disabled">
@@ -50,7 +51,7 @@ if (array_key_exists('error', $_GET)) {
     function confirm_passwords(){
       var pwd1 = $("input[name=password]").val();
       var pwd2 = $("input[name=confirm]").val();
-      if (bool = pwd1 != "" && pwd1 == pwd2) {
+      if (pwd1 != "" && pwd1 == pwd2) {
         $("#submit").removeAttr("disabled");
       } else {
         $("#submit").attr("disabled", "disabled");
@@ -66,3 +67,4 @@ if (array_key_exists('error', $_GET)) {
     });
   </script>
 </body>
+</html>

@@ -2,18 +2,27 @@
 require('common.php');
 require_once('functions/control_MySQL.php');
 
-$request_id = $_GET['id'];
+if ($id == 0 && !isset($_GET['id'])) {
+  header('Location: login.php');
+  exit;
+}
+
+$request_id = isset($_GET['id']) ? $_GET['id'] : $id;
 $opt = [
   'method' => 'select',
   'tables' => ['user'],
-  'columns' => ['*'],
+  'columns' => ['name', 'email'],
   'where' => "id='{$request_id}'"
 ];
 $result = controlMySQL($opt);
-if (count($result) == 0) {
-  echo "ユーザーが存在しません";
+if (!$result) {
+  $_SESSION['message'] = '<p class="message error">ユーザーが存在しません</p>';
+  header('Location: login.php');
+  exit;
 } else {
-  $user = $result[0];
+  $name = $result[0]['name'];
+  $email = $result[0]['email'];
+  $vector = "";
 }
 $is_owner = $id == $request_id;
 ?>
@@ -29,12 +38,15 @@ $is_owner = $id == $request_id;
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <?php
-  echo $message;
-  echo '<p>ユーザー名：'.h($user['name']).'</p>';
-  if ($is_owner) echo '<p>メールアドレス：'.h($user['email']).'</p>';
-  echo "<p>プロフィール写真：<img src='get_img.php?table=user&id={$request_id}' /></p>";
-  echo "<興味・関心>：{$user['vector']}";
-  ?>
+  <?php echo $message; ?>
+  <p>ユーザー名：<?php echo h($name); ?></p>
+  <?php if ($is_owner): ?>
+    <p>メールアドレス：<?php echo h($email); ?></p>
+  <?php endif; ?>
+  <p>プロフィール写真：<img src="get_img.php?table=user&id=<?php echo $request_id; ?>" /></p>
+  <p>興味・関心：<?php echo $vector; ?></p>
+  <?php if ($is_owner): ?>
+    <a href="update_user.php?id=<?php echo $request_id; ?>"><button>変更する</button></a>
+  <?php endif; ?>
 </body>
 </html>
