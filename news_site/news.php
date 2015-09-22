@@ -7,6 +7,7 @@ $opt = [
   'method' => 'select',
   'tables' => ['news', 'user'],
   'columns' => [
+    'news.id',
     'news.title',
     'news.author_id',
     'news.article',
@@ -15,6 +16,7 @@ $opt = [
   'where' => "news.id={$news_id} AND user.id=news.author_id AND news.show_flg=1"
 ];
 $news = controlMySQL($opt);
+$news_id = $news[0]['id'];
 $title = $news[0]['title'];
 $author_id = $news[0]['author_id'];
 $article = $news[0]['article'];
@@ -39,6 +41,9 @@ $is_owner = $id == $author_id;
   <img src="<?php echo $photo_src; ?>" />
   <p><?php echo h($author); ?></p>
   <article><?php echo h($article); ?></article>
+  <?php if ($is_owner): ?>
+    <a href="update_news.php?id=<?php echo $news_id; ?>"><button>編集</button></a>
+  <?php endif; ?>
   <a href="index.php">ニュース一覧へ戻る</a>
 </body>
 </html>

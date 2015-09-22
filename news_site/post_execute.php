@@ -36,7 +36,7 @@ $opt = [
   'method' => 'select',
   'tables' => ['dictionary'],
   'columns' => ['word'],
-  'where' => 'word="'.implode('" OR word="', array_keys($used_words)).'"'
+  'where' => 'word IN ("'.implode('" , "', array_keys($used_words)).'")'
 ];
 $results = controlMySQL($opt);
 $old_words = [];

@@ -31,10 +31,10 @@ if (isset($_SESSION['title']) && isset($_SESSION['article'])) {
 <body>
   <?php echo $message; ?>
   <form action="post_execute.php" method="post" enctype="multipart/form-data">
-    <label for="title" value="<?php echo $tilte; ?>">タイトル</label>
-    <input name="title" type="text" required>
-    <label for="article" value="<?php echo $article; ?>">記事</label>
-    <textarea name="article" required></textarea>
+    <label for="title">タイトル</label>
+    <input name="title" type="text" value="<?php echo $tilte; ?>" required>
+    <label for="article">記事</label>
+    <textarea name="article" value="<?php echo $article; ?>" required></textarea>
     <label for="photo">写真</label>
     <input name="photo" type="file">
     <input name="lat" type="hidden" value="">
