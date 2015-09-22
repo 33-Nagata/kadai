@@ -3,9 +3,10 @@ require('common.php');
 require_once('functions/control_MySQL.php');
 include('yahoo_japan_application_id.php');
 
+var_dump($_POST);
 $title = $_POST['title'];
 $article = $_POST['article'];
-$photo = array_key_exists('photo', $_POST) ? $_POST['photo'] : NULL;
+$photo = file_get_contents($_FILES['photo']['tmp_name']);
 $lat = $_POST['lat'];
 $lon = $_POST['lon'];
 $location = $lat != "" && $lon != "" ? "GeomFromText('POINT({$lon} {$lat})')" : NULL;
@@ -88,6 +89,6 @@ if ($news_id) {
   $_SESSION['message'] = '<p class="message failure">記事の投稿に失敗しました</p>';
   $_SESSION['title'] = $title;
   $_SESSION['article'] = $article;
-  // header('Location: post.php');
+  header('Location: post.php');
 }
 ?>

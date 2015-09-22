@@ -15,7 +15,7 @@ if (count($result) == 0) {
 } else {
   $user = $result[0];
 }
-$owner = $id == $request_id ? true : false;
+$is_owner = $id == $request_id;
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +32,7 @@ $owner = $id == $request_id ? true : false;
   <?php
   echo $message;
   echo '<p>ユーザー名：'.h($user['name']).'</p>';
-  if ($owner) echo '<p>メールアドレス：'.h($user['email']).'</p>';
+  if ($is_owner) echo '<p>メールアドレス：'.h($user['email']).'</p>';
   echo "<p>プロフィール写真：<img src='get_img.php?table=user&id={$request_id}' /></p>";
   echo "<興味・関心>：{$user['vector']}";
   ?>

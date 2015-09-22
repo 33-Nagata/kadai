@@ -30,15 +30,15 @@ if (isset($_SESSION['title']) && isset($_SESSION['article'])) {
 </head>
 <body>
   <?php echo $message; ?>
-  <form action="post_execute.php" method="post">
+  <form action="post_execute.php" method="post" enctype="multipart/form-data">
     <label for="title" value="<?php echo $tilte; ?>">タイトル</label>
     <input name="title" type="text" required>
     <label for="article" value="<?php echo $article; ?>">記事</label>
     <textarea name="article" required></textarea>
     <label for="photo">写真</label>
     <input name="photo" type="file">
-    <input name="lat" type="text" value="">
-    <input name="lon" type="text" value="">
+    <input name="lat" type="hidden" value="">
+    <input name="lon" type="hidden" value="">
     <input type="submit" value="投稿">
   </form>
 

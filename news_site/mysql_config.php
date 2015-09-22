@@ -23,5 +23,9 @@ $paramType = [
   'show_flg' => PDO::PARAM_INT,
   //dictionary
   'word' => PDO::PARAM_STR,
+  //news_word_frequency
+  'news_id' => PDO::PARAM_INT,
+  'word_id' => PDO::PARAM_INT,
+  'frequency' => PDO::PARAM_INT,
 ];
 ?>

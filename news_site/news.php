@@ -8,6 +8,7 @@ $opt = [
   'tables' => ['news', 'user'],
   'columns' => [
     'news.title',
+    'news.author_id',
     'news.article',
     'user.name'
   ],
@@ -15,9 +16,11 @@ $opt = [
 ];
 $news = controlMySQL($opt);
 $title = $news[0]['title'];
+$author_id = $news[0]['author_id'];
 $article = $news[0]['article'];
-$photo_src = "get_img.php?table=news&id={$news_id}";
+$photo_src = "http://127.0.0.1/kadai/news_site/get_img.php?table=news&id={$news_id}";
 $author = $news[0]['name'];
+$is_owner = $id == $author_id;
 ?>
 
 <!DOCTYPE html>

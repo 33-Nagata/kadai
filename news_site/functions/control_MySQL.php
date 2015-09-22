@@ -68,7 +68,7 @@ function controlMySQL ($opt) {
         $stmt->bindValue($k, $v, $paramType[$tableName]);
       }
       $last_id = false;
-      if ($stmt->execute()) $last_id = $stmt->lastInsertId();
+      if ($stmt->execute()) $last_id = $pdo->lastInsertId();
       $pdo = NULL;
       return $last_id;
       break;
@@ -146,6 +146,9 @@ function insertMultiColumns($opt) {
       $stmt->bindValue($placeHolder, $value[$j], $paramType[$column]);
     }
   }
-  $stmt->execute();
+  $last_id = false;
+  if ($stmt->execute()) $last_id = $pdo->lastInsertId();
+  $pdo = NULL;
+  return $last_id;
 }
 ?>
