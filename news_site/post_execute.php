@@ -3,7 +3,6 @@ require('common.php');
 require_once('functions/control_MySQL.php');
 include('yahoo_japan_application_id.php');
 
-var_dump($_POST);
 $title = $_POST['title'];
 $article = $_POST['article'];
 $photo = file_get_contents($_FILES['photo']['tmp_name']);
@@ -12,16 +11,25 @@ $lon = $_POST['lon'];
 $location = $lat != "" && $lon != "" ? "GeomFromText('POINT({$lon} {$lat})')" : NULL;
 //テキスト解析
 $sentence = mb_convert_encoding($article, 'utf-8', 'auto');
-$url = "http://jlp.yahooapis.jp/MAService/V1/parse?appid=".$yahoo_japan_application_id."&results=ma";
-$url .= "&sentence=".urlencode($sentence);
-$xml  = simplexml_load_file($url);
-$used_words = [];
-foreach ($xml->ma_result->word_list->word as $data) {
+$params = [
+  'sentence' => $sentence,
+  'results' => 'uniq',
+  'response' => 'surface',
+  'filter' => '9'
+];
+$ch = curl_init('http://jlp.yahooapis.jp/MAService/V1/parse');
+curl_setopt_array($ch, [
+  CURLOPT_POST => true,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_USERAGENT => "Yahoo AppID: {$yahoo_japan_application_id}",
+  CURLOPT_POSTFIELDS => http_build_query($params),
+]);
+$xml = new SimpleXMLElement(curl_exec($ch));
+curl_close($ch);
+foreach ($xml->uniq_result->word_list->word as $data) {
   $word = (string)$data->surface;
-  $category = $data->pos;
-  if ($category == '名詞') {
-    $used_words[$word] = array_key_exists($word, $used_words) ? $used_words[$word] + 1 : 1;
-  }
+  $count = (int)$data->count;
+  $used_words[$word] = $count;
 }
 //既登録単語取得
 $opt = [
