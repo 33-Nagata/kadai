@@ -32,7 +32,7 @@ if (isset($_SESSION['title']) && isset($_SESSION['article'])) {
   <?php echo $message; ?>
   <form action="post_execute.php" method="post" enctype="multipart/form-data">
     <label for="title">タイトル</label>
-    <input name="title" type="text" value="<?php echo $tilte; ?>" required>
+    <input name="title" type="text" value="<?php echo $title; ?>" required>
     <label for="article">記事</label>
     <textarea name="article" value="<?php echo $article; ?>" required></textarea>
     <label for="photo">写真</label>
