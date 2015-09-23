@@ -50,7 +50,16 @@ $result = controlMySQL($opt);
 $valid = count($result) != 0 ? (intval($result[0]['valid']) + 1) % 2 : 2;
 
 $share_button = $share_count.'シェア';
-if (!$valid) $share_button .= '✓'
+if (!$valid) $share_button .= '✓';
+
+$opt = [
+  'method' => 'select',
+  'tables' => ['comment', 'user'],
+  'columns' => ['user.name', 'comment.id', 'comment.user_id', 'comment.text'],
+  'where' => "comment.news_id='{$news_id}' AND comment.show_flg=1 AND user.id=comment.user_id",
+  'order' => 'create_date'
+];
+$comments = controlMySQL($opt);
 ?>
 
 <!DOCTYPE html>
@@ -81,6 +90,20 @@ if (!$valid) $share_button .= '✓'
       <input type="submit" value="<?php echo $share_button ?>">
     </form>
   <?php endif; ?>
+  <form action="comment.php?id=<?php echo $news_id; ?>" method="post">
+    <textarea name="comment" required></textarea>
+    <input name="lat" type="hidden" value="">
+    <input name="lon" type="hidden" value="">
+    <input type="submit" value="コメントする">
+  </form>
+  <?php foreach ($comments as $comment): ?>
+    <hr>
+    <p class="user_name"><?php echo $comment['name']; ?></p><br>
+    <p class="comment"><?php echo $comment['text']; ?></p><br>
+    <?php if ($id == $comment['user_id']): ?>
+      <a href="delete_comment.php?id=<?php echo $comment['id']; ?>"><button>削除</button></a>
+    <?php endif; ?>
+  <?php endforeach; ?>
   <a href="index.php">ニュース一覧へ戻る</a>
 
   <script>

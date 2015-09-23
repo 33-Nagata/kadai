@@ -15,4 +15,10 @@ if (array_key_exists('message', $_SESSION)) {
 function h($str) {
   return htmlspecialchars($str, ENT_QUOTES);
 }
+
+function formatted_var_dump($var) {
+  echo '<pre>';
+  var_dump($var);
+  echo '</pre>';
+}
 ?>
