@@ -13,6 +13,7 @@ function controlMySQL ($opt) {
       column_name2 => value2
     ],
     'where' => 'where statement',
+    'group' => 'column_name',
     'order' => 'column_name',
     'limit' => NUM,
     'offset' => NUM
@@ -51,6 +52,7 @@ function controlMySQL ($opt) {
       break;
   }
   $where = isset($opt['where']) ? $opt['where'] : false;
+  $group = isset($opt['group']) ? $opt['group'] : false;
   $order = isset($opt['order']) ? $opt['order'] : false;
   $limit = isset($opt['limit']) ? $opt['limit'] : false;
   $offset = isset($opt['offset']) ? $opt['offset'] : false;
@@ -78,6 +80,7 @@ function controlMySQL ($opt) {
       $sql .= ' '.implode(', ', $column);
       $sql .= ' FROM '.$table;
       $sql .= $where ? ' WHERE '.$where : '';
+      $sql .= $group ? ' GROUP BY '.$group : '';
       $sql .= $order ? ' ORDER BY '.$order.' DESC' : '';
       $sql .= $limit ? ' LIMIT '.$limit : '';
       $sql .= $offset ? ' OFFSET '.$offset : '';

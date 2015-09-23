@@ -16,7 +16,7 @@ function h($str) {
   return htmlspecialchars($str, ENT_QUOTES);
 }
 
-function formatted_var_dump($var) {
+function format_var_dump($var) {
   echo '<pre>';
   var_dump($var);
   echo '</pre>';
