@@ -32,5 +32,8 @@ $opt = [
   ]
 ];
 controlMySQL($opt);
+
+include('update_user_vector.php');
+
 header("Location: news.php?id={$news_id}");
 ?>

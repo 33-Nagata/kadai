@@ -43,5 +43,9 @@ if ($valid < 2) {
   ];
 }
 controlMySQL($opt);
+
+//ユーザーベクトル更新
+include('update_user_vector.php');
+
 header("Location: news.php?id={$news_id}");
 ?>
