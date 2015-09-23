@@ -2,7 +2,7 @@
 require('common.php');
 require_once('functions/control_MySQL.php');
 
-$news_id = array_key_exists('id', $_GET) ? $_GET['id'] : 0;
+$news_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : 0;
 $opt = [
   'method' => 'select',
   'tables' => ['news', 'user'],
@@ -16,6 +16,11 @@ $opt = [
   'where' => "news.id={$news_id} AND user.id=news.author_id AND news.show_flg=1"
 ];
 $news = controlMySQL($opt);
+if (count($news) == 0) {
+  $_SESSION['message'] = '<p class="message error">記事が存在しません</p>';
+  header('Location: index.php');
+  exit;
+}
 $news_id = $news[0]['id'];
 $title = $news[0]['title'];
 $author_id = $news[0]['author_id'];
@@ -23,6 +28,29 @@ $article = $news[0]['article'];
 $photo_src = "http://127.0.0.1/kadai/news_site/get_img.php?table=news&id={$news_id}";
 $author = $news[0]['name'];
 $is_owner = $id == $author_id;
+
+$opt = [
+  'method' => 'select',
+  'tables' => ['share'],
+  'columns' => ['count(valid) AS cnt'],
+  'where' => "news_id='{$news_id}' AND valid=1"
+];
+$result = controlMySQL($opt);
+$share_count = $result[0]['cnt'];
+
+$opt = [
+  'method' => 'select',
+  'tables' => ['share'],
+  'columns' => ['valid'],
+  'where' => "user_id='{$id}' AND news_id='{$news_id}'"
+];
+$result = controlMySQL($opt);
+//データがあればフラグを反転・なければ2
+//0:シェアを外す, 1:再度シェアする, 2:新規にシェアする
+$valid = count($result) != 0 ? (intval($result[0]['valid']) + 1) % 2 : 2;
+
+$share_button = $share_count.'シェア';
+if (!$valid) $share_button .= '✓'
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +62,8 @@ $is_owner = $id == $author_id;
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
   <?php echo $message; ?>
@@ -43,7 +73,25 @@ $is_owner = $id == $author_id;
   <article><?php echo h($article); ?></article>
   <?php if ($is_owner): ?>
     <a href="update_news.php?id=<?php echo $news_id; ?>"><button>編集</button></a>
+  <?php else: ?>
+    <form action="share.php?id=<?php echo $news_id; ?>" method="post">
+      <input name="lat" type="hidden" value="">
+      <input name="lon" type="hidden" value="">
+      <input name="valid" type="hidden" value="<?php echo $valid; ?>">
+      <input type="submit" value="<?php echo $share_button ?>">
+    </form>
   <?php endif; ?>
   <a href="index.php">ニュース一覧へ戻る</a>
+
+  <script>
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position){
+      $("input[name=lat]").val(position.coords.latitude);
+      $("input[name=lon]").val(position.coords.longitude);
+    }, function(){
+      console.log("位置情報取得不可");
+    });
+  }
+  </script>
 </body>
 </html>

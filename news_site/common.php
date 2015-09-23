@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (array_key_exists('id', $_SESSION) && is_int(intval($_SESSION['id']))) {
+if (isset($_SESSION['id']) && intval($_SESSION['id'])) {
   $id = $_SESSION['id'];
 } else {
   $id = 0;

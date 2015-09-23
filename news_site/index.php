@@ -5,6 +5,7 @@ $NEWS_PER_PAGE = 10;
 $page = array_key_exists('page', $_GET) ? $_GET['page'] : 1;
 
 if ($id == 0) {
+  //未ログイン
   $opt = [
     'method' => 'select',
     'tables' => ['news', 'user'],
@@ -16,7 +17,16 @@ if ($id == 0) {
   ];
   $all_news = controlMySQL($opt);
 } else {
-  $opt = [];
+  //ログインユーザー
+  $opt = [
+    'method' => 'select',
+    'tables' =>['news', 'user'],
+    'columns' => ['news.id', 'news.title', 'news.create_date', 'user.name'],
+    'where' => 'user.id=news.author_id AND news.show_flg=1',
+    'order' => 'news.create_date',
+    'limit' => $NEWS_PER_PAGE,
+    'offset' => $NEWS_PER_PAGE * ($page - 1)
+  ];
   $all_news = controlMySQL($opt);
 }
 ?>
