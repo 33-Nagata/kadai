@@ -14,7 +14,18 @@ if (!isset($_POST['title']) || $_POST['title'] == "" || !isset($_POST['article']
 $news_id = $_POST['news_id'];
 $title = $_POST['title'];
 $article = $_POST['article'];
-$photo = isset($_FILES['photo']['tmp_name']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE ? file_get_contents($_FILES['photo']['tmp_name']) : false;
+if (isset($_FILES['photo']['tmp_name']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE) {
+  $photo = file_get_contents($_FILES['photo']['tmp_name']);
+} else {
+  $opt = [
+    'method' => 'select',
+    'tables' => ['news'],
+    'columns' => ['photo'],
+    'where' => "id='{$news_id}'"
+  ];
+  $result = controlMySQL($opt);
+  $photo = $result[0]['photo'];
+}
 $lat = $_POST['lat'];
 $lon = $_POST['lon'];
 $location = $lat != "" && $lon != "" ? "GeomFromText('POINT({$lon} {$lat})')" : NULL;

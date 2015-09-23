@@ -15,7 +15,7 @@ $news_id = $_GET['id'];
 $opt = [
   'method' => 'select',
   'tables' => ['news'],
-  'columns' => ['title', 'author_id', 'article', 'NOT ISNULL("photo") AS photo_exist'],
+  'columns' => ['title', 'author_id', 'article', 'photo', 'show_flg'],
   'where' => "id='{$news_id}'"
 ];
 $result = controlMySQL($opt);
@@ -33,7 +33,8 @@ if (isset($_SESSION['title']) && isset($_SESSION['article'])) {
   unset($_SESSION['article']);
 }
 $author_id = $result[0]['author_id'];
-$photo_src = $result[0]['photo_exist'] ? "http://127.0.0.1/kadai/news_site/get_img.php?table=news&id={$news_id}" : "";
+$photo_src = !is_null($result[0]['photo']) ? "http://127.0.0.1/kadai/news_site/get_img.php?table=news&id={$news_id}" : "";
+$show_flg = $result[0]['show_flg'];
 if ($id != $author_id) {
   $_SESSION['message'] = '<p class="message error">編集権限がありません</p>';
   header("Location: news.php?id={$news_id}");
@@ -64,7 +65,7 @@ if ($id != $author_id) {
     <img src="<?php echo $photo_src; ?>" />
     <input name="photo" type="file">
     <label for="delete[]">削除</label>
-    <input name="delete[]" type="checkbox" value="0">
+    <input name="delete[]" type="checkbox" value="0" <?php if (!$show_flg) echo 'checked="checked"' ?>>
     <input name="news_id" type="hidden" value="<?php echo $news_id; ?>">
     <input name="lat" type="hidden" value="">
     <input name="lon" type="hidden" value="">
