@@ -22,8 +22,19 @@ if (!$result) {
 } else {
   $name = $result[0]['name'];
   $email = $result[0]['email'];
-  $vector = "";
 }
+$opt = [
+  'method' => 'select',
+  'tables' => ['dictionary', 'user_vector'],
+  'columns' => ['dictionary.word AS word'],
+  'where' => "user_vector.word_id=dictionary.id AND user_vector.user_id='{$request_id}'",
+  'order' => 'user_vector.tf_idf',
+  'limit' => 5
+];
+$results = controlMySQL($opt);
+$interests = [];
+foreach ($results as $row) $interests[] = $row['word'];
+
 $is_owner = $id == $request_id;
 ?>
 
@@ -44,7 +55,7 @@ $is_owner = $id == $request_id;
     <p>メールアドレス：<?php echo h($email); ?></p>
   <?php endif; ?>
   <p>プロフィール写真：<img src="get_img.php?table=user&id=<?php echo $request_id; ?>" /></p>
-  <p>興味・関心：<?php echo $vector; ?></p>
+  <p>関心のあるワード：<?php echo implode(', ', $interests); ?></p>
   <?php if ($is_owner): ?>
     <a href="update_user.php?id=<?php echo $request_id; ?>"><button>変更する</button></a>
   <?php endif; ?>
