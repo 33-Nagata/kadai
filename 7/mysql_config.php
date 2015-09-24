@@ -33,5 +33,8 @@ $paramType = [
   'valid' => PDO::PARAM_INT,
   //user_vector
   'tf_idf' => PDO::PARAM_STR,
+  //follow
+  'follower_id' => PDO::PARAM_INT,
+  'followed_id' => PDO::PARAM_INT,
 ];
 ?>

@@ -23,6 +23,7 @@ if (!$result) {
   $name = $result[0]['name'];
   $email = $result[0]['email'];
 }
+
 $opt = [
   'method' => 'select',
   'tables' => ['dictionary', 'user_vector'],
@@ -34,6 +35,17 @@ $opt = [
 $results = controlMySQL($opt);
 $interests = [];
 foreach ($results as $row) $interests[] = $row['word'];
+
+$opt = [
+  'method' => 'select',
+  'tables' => ['follow'],
+  'columns' => ['valid'],
+  'where' => "follower_id='{$id}' AND followed_id='{$request_id}'"
+];
+$result = controlMySQL($opt);
+$valid = count($result) > 0 ? ($result[0]['valid'] + 1) % 2 : 2;
+$follow_button = 'フォロー';
+if ($valid == 0) $follow_button .= '✓';
 
 $is_owner = $id == $request_id;
 ?>
@@ -58,6 +70,11 @@ $is_owner = $id == $request_id;
   <p>関心のあるワード：<?php echo implode(', ', $interests); ?></p>
   <?php if ($is_owner): ?>
     <a href="update_user.php?id=<?php echo $request_id; ?>"><button>変更する</button></a>
+  <?php else: ?>
+    <form action="follow.php" method="post">
+      <input name="id" type="hidden" value="<?php echo $request_id; ?>">
+      <input type="submit" value="<?php echo $follow_button; ?>">
+    </form>
   <?php endif; ?>
 </body>
 </html>
