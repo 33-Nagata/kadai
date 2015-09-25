@@ -23,7 +23,7 @@ if (!$result) {
   $name = $result[0]['name'];
   $email = $result[0]['email'];
   $is_photo = $result[0]['is_photo'];
-  $photo_src = "get_photo.php?table=user&id={%request_id}";
+  $photo_src = "get_img.php?table=user&id={$request_id}";
 }
 //関心ワード取得
 $opt = [
