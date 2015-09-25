@@ -33,28 +33,22 @@ foreach ($results as $row) {
 foreach ($words as $word) $tf[$word['word_id']] = $word['count'] / $total;
 
 //Inverse Document Frequency
-$opt = [
-  'method' => 'select',
-  'tables' => ['news'],
-  'columns' => ['COUNT(news.id) AS sum'],
-  'where' => 'news.show_flg=1'
-];
-$result = controlMySQL($opt);
-$total = $result[0]['sum'];
-$opt = [
-  'method' => 'select',
-  'tables' => ['news_word_frequency', 'news'],
-  'columns' => ['word_id', 'COUNT(news_word_frequency.news_id) AS count'],
-  'where' => 'news_word_frequency.news_id=news.id AND news.show_flg=1 AND news_word_frequency.word_id IN ("'.implode('", "', array_keys($tf)).'")',
-  'group' => 'news_word_frequency.word_id'
-];
-$words = controlMySQL($opt);
-foreach ($words as $word) $idf[$word['word_id']] = log($total / $word['count']);
+include('idf.php');
 
 //TF-IDF
-foreach ($tf as $word_id => $value) $tf_idf[$word_id] = $value * $idf[$word_id];
+include('tf_idf.php');
 
-//データ登録
+//user.vector更新
+$vector = serialize($tf_idf);
+$opt = [
+  'method' => 'update',
+  'tables' => ['user'],
+  'columns' => ['vector' => $vector],
+  'where' => "id='{$id}'"
+];
+controlMySQL($opt);
+
+//user_vector.tf_idf更新
 $new_ids = array_diff(array_keys($tf_idf), $resistered_id);
 if (count($new_ids) > 0) {
   $opt = [

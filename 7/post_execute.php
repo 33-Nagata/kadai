@@ -53,6 +53,10 @@ foreach ($word_list as $word_id => $word_data) {
 }
 insertMultiColumns($opt);
 
+//記事のvector登録
+include("update_news_vector.php");
+
+//結果表示
 if ($news_id) {
   $_SESSION['message'] = '<p class="message success">記事を投稿しました</p>';
   header("Location: news.php?id={$news_id}");
