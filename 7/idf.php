@@ -1,5 +1,5 @@
 <?php
-require('common.php');
+require_once('common.php');
 require_once('functions/control_MySQL.php');
 require('login_required.php');
 
@@ -21,7 +21,7 @@ $total = $result[0]['sum'];
 $opt = [
   'method' => 'select',
   'tables' => ['news_word_frequency', 'news'],
-  'columns' => ['word_id', 'COUNT(news_word_frequency.news_id) AS count'],
+  'columns' => ['news_word_frequency.word_id AS word_id', 'COUNT(news_word_frequency.news_id) AS count'],
   'where' => 'news_word_frequency.news_id=news.id AND news.show_flg=1 AND news_word_frequency.word_id IN ("'.implode('", "', array_keys($tf)).'")',
   'group' => 'news_word_frequency.word_id'
 ];

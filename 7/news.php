@@ -85,7 +85,7 @@ $comments = controlMySQL($opt);
   <p><?php echo h($author); ?></p>
   <article><?php echo h($article); ?></article>
   <?php if ($is_owner): ?>
-    <a href="update_news.php?id=<?php echo $news_id; ?>"><button>編集</button></a>
+    <a href="delete_news.php?id=<?php echo $news_id; ?>"><button>削除</button></a>
   <?php else: ?>
     <form action="share.php?id=<?php echo $news_id; ?>" method="post">
       <input name="lat" type="hidden" value="">

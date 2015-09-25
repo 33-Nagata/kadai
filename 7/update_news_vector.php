@@ -13,8 +13,8 @@ if (!isset($news_id)) {
 ////Term Frequency
 $opt = [
   'method' => 'select',
-  'tables' => 'news_word_frequency',
-  'columns' => 'word_id, frequency',
+  'tables' => ['news_word_frequency'],
+  'columns' => ['word_id, frequency'],
   'where' => "news_id='{$news_id}'"
 ];
 $results = controlMySQL($opt);
