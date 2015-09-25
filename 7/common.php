@@ -13,7 +13,9 @@ if (array_key_exists('message', $_SESSION)) {
 }
 
 function h($str) {
-  return htmlspecialchars($str, ENT_QUOTES);
+  $result = htmlspecialchars($str, ENT_QUOTES);
+  $result = str_replace(PHP_EOL, '<br>', $result);
+  return $result;
 }
 
 function format_var_dump($var) {
