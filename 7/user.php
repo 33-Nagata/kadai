@@ -11,7 +11,7 @@ $request_id = isset($_GET['id']) ? $_GET['id'] : $id;
 $opt = [
   'method' => 'select',
   'tables' => ['user'],
-  'columns' => ['name', 'email'],
+  'columns' => ['name', 'email', 'photo IS NOT NULL AS is_photo'],
   'where' => "id='{$request_id}'"
 ];
 $result = controlMySQL($opt);
@@ -22,6 +22,8 @@ if (!$result) {
 } else {
   $name = $result[0]['name'];
   $email = $result[0]['email'];
+  $is_photo = $result[0]['is_photo'];
+  $photo_src = "get_photo.php?table=user&id={%request_id}";
 }
 //関心ワード取得
 $opt = [
@@ -88,7 +90,9 @@ if (!$is_owner) {
   <?php if ($is_owner): ?>
     <p>メールアドレス：<?php echo h($email); ?></p>
   <?php endif; ?>
-  <p>プロフィール写真：<img src="get_img.php?table=user&id=<?php echo $request_id; ?>" /></p>
+  <?php if ($is_photo): ?>
+    <p>プロフィール写真：<img src="<?php echo $photo_src; ?>" /></p>
+  <?php endif; ?>
   <p>関心のあるワード：<?php echo implode(', ', $interests); ?></p>
   <?php if ($is_owner): ?>
     <a href="update_user.php?id=<?php echo $request_id; ?>"><button>プロフィール変更</button></a>

@@ -10,6 +10,7 @@ $opt = [
     'news.id',
     'news.title',
     'news.author_id',
+    'news.photo IS NOT NULL AS is_photo',
     'news.article',
     'user.name'
   ],
@@ -25,7 +26,8 @@ $news_id = $news[0]['id'];
 $title = $news[0]['title'];
 $author_id = $news[0]['author_id'];
 $article = $news[0]['article'];
-$photo_src = "http://127.0.0.1/kadai/news_site/get_img.php?table=news&id={$news_id}";
+$is_photo = $news[0]['is_photo'];
+$photo_src = "get_img.php?table=news&id={$news_id}";
 $author = $news[0]['name'];
 $is_owner = $id == $author_id;
 
@@ -77,7 +79,9 @@ $comments = controlMySQL($opt);
 <body>
   <?php echo $message; ?>
   <h1><?php echo h($title); ?></h1>
-  <img src="<?php echo $photo_src; ?>" />
+  <?php if ($is_photo): ?>
+    <img src="<?php echo $photo_src; ?>" />
+  <?php endif; ?>
   <p><?php echo h($author); ?></p>
   <article><?php echo h($article); ?></article>
   <?php if ($is_owner): ?>
