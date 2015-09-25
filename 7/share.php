@@ -1,5 +1,5 @@
 <?php
-require('common.php');
+require_once('common.php');
 require_once('functions/control_MySQL.php');
 require('login_required.php');
 

@@ -1,5 +1,5 @@
 <?php
-require('common.php');
+require_once('common.php');
 require_once('functions/control_MySQL.php');
 
 if (!isset($_POST['name']) || $_POST['name'] == "" || !isset($_POST['email']) || $_POST['email'] == "") {

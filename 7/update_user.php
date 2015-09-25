@@ -1,5 +1,5 @@
 <?php
-require('common.php');
+require_once('common.php');
 require_once('functions/control_MySQL.php');
 if ($id == 0) {
   $_SESSION['message'] = '<p class="message error">ログインしてください</p>';

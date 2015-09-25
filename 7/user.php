@@ -1,5 +1,5 @@
 <?php
-require('common.php');
+require_once('common.php');
 require_once('functions/control_MySQL.php');
 
 if ($id == 0 && !isset($_GET['id'])) {

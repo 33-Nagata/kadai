@@ -1,7 +1,8 @@
 <?php
-require('common.php');
+require_once('common.php');
 
 if ($id == 0) {
+  $_SESSION['message'] = '<p class="message error>ニュースを投稿するにはログインしてください</p>"';
   header('Location: login.php');
   exit;
 }

@@ -1,5 +1,5 @@
 <?php
-require('common.php');
+require_once('common.php');
 require_once('functions/control_MySQL.php');
 $NEWS_PER_PAGE = 10;
 $page = array_key_exists('page', $_GET) ? $_GET['page'] : 1;

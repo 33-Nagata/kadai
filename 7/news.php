@@ -1,5 +1,5 @@
 <?php
-require('common.php');
+require_once('common.php');
 require_once('functions/control_MySQL.php');
 
 $news_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : 0;
