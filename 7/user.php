@@ -6,7 +6,7 @@ if ($id == 0 && !isset($_GET['id'])) {
   header('Location: login.php');
   exit;
 }
-
+//プロフィールを取得
 $request_id = isset($_GET['id']) ? $_GET['id'] : $id;
 $opt = [
   'method' => 'select',
@@ -23,7 +23,7 @@ if (!$result) {
   $name = $result[0]['name'];
   $email = $result[0]['email'];
 }
-
+//関心ワード取得
 $opt = [
   'method' => 'select',
   'tables' => ['dictionary', 'user_vector'],
@@ -35,19 +35,41 @@ $opt = [
 $results = controlMySQL($opt);
 $interests = [];
 foreach ($results as $row) $interests[] = $row['word'];
-
+//最近の投稿取得
 $opt = [
   'method' => 'select',
-  'tables' => ['follow'],
-  'columns' => ['valid'],
-  'where' => "follower_id='{$id}' AND followed_id='{$request_id}'"
+  'tables' => ['news'],
+  'columns' => ['id', 'title'],
+  'where' => "author_id='{$request_id}' AND show_flg=1",
+  'order' => 'create_date',
+  'limit' => 5
 ];
-$result = controlMySQL($opt);
-$valid = count($result) > 0 ? ($result[0]['valid'] + 1) % 2 : 2;
-$follow_button = 'フォロー';
-if ($valid == 0) $follow_button .= '✓';
-
+$recent_news = controlMySQL($opt);
+//最近のシェア
+$opt = [
+  'method' => 'select',
+  'tables' => ['news', 'share'],
+  'columns' => ['news.id AS id', 'news.title AS title'],
+  'where' => "news.id=share.news_id AND share.user_id='{$request_id}' AND news.show_flg=1 AND share.valid=1",
+  'order' => 'share.update_date',
+  'limit' => 5
+];
+$recent_share = controlMySQL($opt);
+//本人判定用変数セット
 $is_owner = $id == $request_id;
+//フォローボタン作成
+if (!$is_owner) {
+  $opt = [
+    'method' => 'select',
+    'tables' => ['follow'],
+    'columns' => ['valid'],
+    'where' => "follower_id='{$id}' AND followed_id='{$request_id}'"
+  ];
+  $result = controlMySQL($opt);
+  $valid = count($result) > 0 ? ($result[0]['valid'] + 1) % 2 : 2;
+  $follow_button = 'フォロー';
+  if ($valid == 0) $follow_button .= '✓';
+}
 ?>
 
 <!DOCTYPE html>
@@ -69,12 +91,31 @@ $is_owner = $id == $request_id;
   <p>プロフィール写真：<img src="get_img.php?table=user&id=<?php echo $request_id; ?>" /></p>
   <p>関心のあるワード：<?php echo implode(', ', $interests); ?></p>
   <?php if ($is_owner): ?>
-    <a href="update_user.php?id=<?php echo $request_id; ?>"><button>変更する</button></a>
+    <a href="update_user.php?id=<?php echo $request_id; ?>"><button>プロフィール変更</button></a>
+    <a href="post.php"><button>ニュース投稿</button></a>
   <?php else: ?>
     <form action="follow.php" method="post">
       <input name="id" type="hidden" value="<?php echo $request_id; ?>">
       <input type="submit" value="<?php echo $follow_button; ?>">
     </form>
+  <?php endif; ?>
+  <hr>
+  <p>最近の投稿</p>
+  <?php if ($recent_news == false || count($recent_news) == 0): ?>
+    <p>なし</p>
+  <?php else: ?>
+    <?php foreach ($recent_news as $news): ?>
+      <p><a href="news.php?id=<?php echo $news['id']; ?>"><?php echo $news['title']; ?></a></p>
+    <?php endforeach; ?>
+  <?php endif; ?>
+  <hr>
+  <p>最近のシェア</p>
+  <?php if ($recent_share == false || count($recent_share) == 0): ?>
+    <p>なし</p>
+  <?php else: ?>
+    <?php foreach ($recent_share as $news): ?>
+      <p><a href="news.php?id=<?php echo $news['id']; ?>"><?php echo $news['title']; ?></a></p>
+    <?php endforeach; ?>
   <?php endif; ?>
 </body>
 </html>
