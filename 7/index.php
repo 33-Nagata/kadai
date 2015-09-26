@@ -20,6 +20,15 @@ if ($id == 0) {
   //ログインユーザー
   $opt = [
     'method' => 'select',
+    'tables' => ['mark_read'],
+    'columns' => ['news_id'],
+    'where' => "user_id='{$id}' AND valid=1"
+  ];
+  $results = controlMySQL($opt);
+  $read_news = [];
+  foreach ($results as $row) $read_news[] = $row['news_id'];
+  $opt = [
+    'method' => 'select',
     'tables' =>['news', 'user'],
     'columns' => [
       'news.id AS news_id',
@@ -27,26 +36,12 @@ if ($id == 0) {
       'news.create_date AS create_date',
       'user.name AS name'
     ],
-    'where' => 'user.id=news.author_id AND news.show_flg=1',
+    'where' => "user.id=news.author_id AND news.show_flg=1 AND news.id NOT IN ('".implode("', '", $read_news)."')",
     'order' => 'news.create_date',
     'limit' => $NEWS_PER_PAGE,
     'offset' => $NEWS_PER_PAGE * ($page - 1)
   ];
   $all_news = controlMySQL($opt);
-  $opt = [
-    'method' => 'select',
-    'tables' => ['mark_read'],
-    'columns' => ['news_id'],
-    'where' => "user_id='{$id}' AND valid=1"
-  ];
-  $results = controlMySQL($opt);
-  $read_news = [];
-  foreach ($results as $row) {
-    foreach ($all_news as $index => $news) {
-      if ($news['news_id'] == $row['news_id']) $read_news[] = $index;
-    }
-  }
-  foreach ($read_news as $index) unset($all_news[$index]);
 }
 ?>
 
