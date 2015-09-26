@@ -15,9 +15,8 @@ if ($id == 0) {
     'limit' => $NEWS_PER_PAGE,
   ];
   $all_news = controlMySQL($opt);
-} else {
   //ログインユーザー
-
+} else {
   //既読ニュース取得
   $opt = [
     'method' => 'select',
@@ -89,6 +88,7 @@ if ($id == 0) {
       latest_news[i]['date_obj'] = new Date(latest_news[i]['date_str']);
     }
     var close_news = [];
+    var popular_news = [];
     </script>
 </head>
 <body>
@@ -119,10 +119,23 @@ if ($id == 0) {
     <tbody>
     </tbody>
   </table>
+  <hr>
+  <h2>近くで話題になってること</h2>
+  <table class="news" id="popular">
+    <thead>
+      <tr>
+        <th>記事タイトル</th>
+        <th>投稿者</th>
+        <th>投稿日</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 
   <script>
   function append_news(i) {
-    var category_news = [latest_news, close_news];
+    var category_news = [latest_news, close_news, popular_news];
     for (var j = 0; j < category_news[i].length; j++) {
       var news = $(news_template).clone(true);
       for (var k = 0; k < class_names.length; k++) {
@@ -133,7 +146,7 @@ if ($id == 0) {
     }
   }
 
-  var categories = ['latest', 'close'];
+  var categories = ['latest', 'close', 'popular'];
   var class_names = ['title', 'author', 'date'];
   var news_template = document.createElement('tr');
   for (var i = 0; i < class_names.length; i++) {
@@ -158,11 +171,34 @@ if ($id == 0) {
             close_news = JSON.parse(data);
             for (var row = 0; row < close_news.length; row++) {
               var news_id = close_news[row]['news_id'];
-              var title = close_news[row]['title']
+              var title = close_news[row]['title'];
               close_news[row]['title'] = '<a href="news.php?id='+news_id+'">'+title+'</a>';
             }
             $("#close tbody tr").remove();
             append_news(1);
+          } else {
+            console.log(textStatus);
+          }
+        },
+        'html'
+      );
+      $.get(
+        'get_popular_news.php',
+        {
+          lat: latitude,
+          lon: longitude
+        },
+        //近くで話題のニュース取得
+        function(data, textStatus) {
+          if (textStatus == 'success') {
+            popular_news = JSON.parse(data);
+            for (var row = 0; row < popular_news.length; row++) {
+              var news_id = popular_news[row]['news_id'];
+              var title = popular_news[row]['title'];
+              popular_news[row]['title'] = '<a href="news.php?id='+news_id+'">'+title+'</a>';
+            }
+            $("#popular tbody tr").remove();
+            append_news(2);
           } else {
             console.log(textStatus);
           }
