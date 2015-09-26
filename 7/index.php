@@ -34,8 +34,8 @@ if ($id == 0) {
     'columns' => [
       'news.id AS news_id',
       'news.title AS title',
-      'DATE_FORMAT(create_date, "%Y/%c/%e") AS date',
-      'DATE_FORMAT(create_date, "%k:%i:%s") AS time',
+      'DATE_FORMAT(news.create_date, "%Y/%c/%e") AS date',
+      'DATE_FORMAT(news.create_date, "%k:%i:%s") AS time',
       '(UNIX_TIMESTAMP(CONVERT_TZ(SYSDATE(), "Etc/UTC", "SYSTEM")) - UNIX_TIMESTAMP()) / 3600 AS time_zone',
       'user.name AS name'
     ],
@@ -66,7 +66,53 @@ if ($id == 0) {
       'date_str' => $date_str,
     ];
   }
-  $all_news = controlMySQL($opt);
+  //フォローしてる人が話題にしているニュース取得
+  $opt = [
+    'method' => 'select',
+    'tables' => ['follow'],
+    'columns' => ['followed_id'],
+    'where' => "follower_id={$id} AND valid=1"
+  ];
+  $results = controlMySQL($opt);
+  $followed_ids = [];
+  foreach ($results as $row) $followed_ids[] = $row['followed_id'];
+  $opt = [
+    'method' => 'select',
+    'tables' => ['news', 'comment', 'user'],
+    'columns' => [
+      'news.id AS news_id',
+      'news.title AS title',
+      'DATE_FORMAT(comment.create_date, "%Y/%c/%e") AS date',
+      'DATE_FORMAT(comment.create_date, "%k:%i:%s") AS time',
+      '(UNIX_TIMESTAMP(CONVERT_TZ(SYSDATE(), "Etc/UTC", "SYSTEM")) - UNIX_TIMESTAMP()) / 3600 AS time_zone',
+      'user.name AS name'
+    ],
+    'where' => 'news.id=comment.news_id AND user.id=comment.user_id AND news.show_flg=1 AND comment.show_flg=1 AND comment.user_id IN ('.implode(", ", $followed_ids).")",
+    'order' => 'comment.create_date'
+  ];
+  $results = controlMySQL($opt);
+  $follow_news = [];
+  foreach ($results as $row) {
+    $news_id = $row['news_id'];
+    $title = h($row['title']);
+    $name = h($row['name']);
+    $date = $row['date'];
+    $time = $row['time'];
+    $tz = $row['time_zone'];
+    $decimal = abs($tz) - (int)abs($tz);
+    $minute = $decimal == 0 ? 0 : round(60 / $decimal);
+    $tz_str = $tz < 0 ? '-' : '+';
+    $tz_str .= abs($tz) < 10 ? '0' : '';
+    $tz_str .= (int)abs($tz) * 100 + $minute;
+    $date_str = "{$date} {$time} {$tz_str}";
+    $follow_news[] = [
+      'news_id' => $news_id,
+      'title' => "<a href='news.php?id={$news_id}'>{$title}</a>",
+      'author' => $name,
+      'date' => $date,
+      'date_str' => $date_str,
+    ];
+  }
 }
 ?>
 
@@ -89,6 +135,10 @@ if ($id == 0) {
     }
     var close_news = [];
     var popular_news = [];
+    var follow_news = <?php echo json_safe_encode($follow_news); ?>;
+    for (var i = 0; i < follow_news.length; i++) {
+      follow_news[i]['date_obj'] = new Date(follow_news[i]['date_str']);
+    }
     </script>
 </head>
 <body>
@@ -101,6 +151,19 @@ if ($id == 0) {
         <th>記事タイトル</th>
         <th>投稿者</th>
         <th>投稿日</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <hr>
+  <h2>フォローしてる人が話題にしていること</h2>
+  <table class="news" id="follow">
+    <thead>
+      <tr>
+        <th>記事タイトル</th>
+        <th>投稿者</th>
+        <th>コメント日</th>
       </tr>
     </thead>
     <tbody>
@@ -134,8 +197,14 @@ if ($id == 0) {
   </table>
 
   <script>
+  function index_of(value, array) {
+    for (var i = 0; i < array.length; i++) {
+      if (array[i] == value) return i;
+    }
+    return false;
+  }
   function append_news(i) {
-    var category_news = [latest_news, close_news, popular_news];
+    var category_news = [latest_news, follow_news, close_news, popular_news];
     for (var j = 0; j < category_news[i].length; j++) {
       var news = $(news_template).clone(true);
       for (var k = 0; k < class_names.length; k++) {
@@ -146,7 +215,7 @@ if ($id == 0) {
     }
   }
 
-  var categories = ['latest', 'close', 'popular'];
+  var categories = ['latest', 'follow', 'close', 'popular'];
   var class_names = ['title', 'author', 'date'];
   var news_template = document.createElement('tr');
   for (var i = 0; i < class_names.length; i++) {
@@ -175,7 +244,7 @@ if ($id == 0) {
               close_news[row]['title'] = '<a href="news.php?id='+news_id+'">'+title+'</a>';
             }
             $("#close tbody tr").remove();
-            append_news(1);
+            append_news(index_of('close', categories));
           } else {
             console.log(textStatus);
           }
@@ -198,7 +267,7 @@ if ($id == 0) {
               popular_news[row]['title'] = '<a href="news.php?id='+news_id+'">'+title+'</a>';
             }
             $("#popular tbody tr").remove();
-            append_news(2);
+            append_news(index_of('popular', categories));
           } else {
             console.log(textStatus);
           }
