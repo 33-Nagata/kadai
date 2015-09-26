@@ -22,6 +22,7 @@ if (count($news) == 0) {
   header('Location: index.php');
   exit;
 }
+//使用変数用意
 $news_id = $news[0]['id'];
 $title = $news[0]['title'];
 $author_id = $news[0]['author_id'];
@@ -39,7 +40,7 @@ $opt = [
 ];
 $result = controlMySQL($opt);
 $share_count = $result[0]['cnt'];
-
+//シェアボタン作成
 $opt = [
   'method' => 'select',
   'tables' => ['share'],
@@ -53,7 +54,7 @@ $valid = count($result) != 0 ? (intval($result[0]['valid']) + 1) % 2 : 2;
 
 $share_button = $share_count.'シェア';
 if (!$valid) $share_button .= '✓';
-
+//コメント取得
 $opt = [
   'method' => 'select',
   'tables' => ['comment', 'user'],
@@ -62,6 +63,37 @@ $opt = [
   'order' => 'create_date'
 ];
 $comments = controlMySQL($opt);
+//既読にする
+$opt = [
+  'method' => 'select',
+  'tables' => ['mark_read'],
+  'columns' => ['COUNT(id) AS count'],
+  'where' => "user_id='{$id}' AND news_id='{$news_id}'"
+];
+$result = controlMySQL($opt);
+$count = $result[0]['count'];
+$unmark = $count !== false;
+if ($unmark) {
+  if ($count == 0) {
+    $opt = [
+      'method' => 'insert',
+      'tables' => ['mark_read'],
+      'columns' => [
+        'user_id' => $id,
+        'news_id' => $news_id,
+        'valid' => 1
+      ]
+    ];
+  } else {
+    $opt = [
+      'method' => 'update',
+      'tables' => ['mark_read'],
+      'columns' => ['valid' => 1],
+      'where' => "user_id='{$id}' AND news_id='{$news_id}'"
+    ];
+  }
+  controlMySQL($opt);
+}
 ?>
 
 <!DOCTYPE html>
@@ -84,6 +116,12 @@ $comments = controlMySQL($opt);
   <?php endif; ?>
   <p><?php echo h($author); ?></p>
   <article><?php echo h($article); ?></article>
+  <?php if ($unmark): ?>
+    <form action="unmark_read.php" method="post">
+      <input name="news_id" type="hidden" value="<?php echo $news_id; ?>">
+      <input type="submit" value="未読にする">
+    </form>
+  <?php endif; ?>
   <?php if ($is_owner): ?>
     <a href="delete_news.php?id=<?php echo $news_id; ?>"><button>削除</button></a>
   <?php else: ?>

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2015 年 9 月 25 日 19:50
+-- Generation Time: 2015 年 9 月 26 日 02:46
 -- サーバのバージョン： 5.6.26
 -- PHP Version: 5.6.12
 
@@ -1241,6 +1241,29 @@ CREATE TABLE IF NOT EXISTS `follow` (
 
 INSERT INTO `follow` (`id`, `follower_id`, `followed_id`, `valid`) VALUES
 (9, 15, 10, 0);
+
+-- --------------------------------------------------------
+
+--
+-- テーブルの構造 `mark_read`
+--
+
+CREATE TABLE IF NOT EXISTS `mark_read` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `news_id` int(11) NOT NULL,
+  `valid` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- テーブルのデータのダンプ `mark_read`
+--
+
+INSERT INTO `mark_read` (`id`, `user_id`, `news_id`, `valid`) VALUES
+(1, 15, 51, 0),
+(2, 15, 24, 1),
+(3, 15, 25, 1),
+(4, 15, 26, 1);
 
 -- --------------------------------------------------------
 
@@ -6534,6 +6557,12 @@ ALTER TABLE `follow`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `mark_read`
+--
+ALTER TABLE `mark_read`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `news`
 --
 ALTER TABLE `news`
@@ -6582,6 +6611,11 @@ ALTER TABLE `dictionary`
 --
 ALTER TABLE `follow`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `mark_read`
+--
+ALTER TABLE `mark_read`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `news`
 --
