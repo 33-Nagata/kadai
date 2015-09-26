@@ -12,7 +12,7 @@ $opt = [
   'method' => 'select',
   'tables' => ['user'],
   'columns' => ['name', 'email', 'photo IS NOT NULL AS is_photo'],
-  'where' => "id='{$request_id}'"
+  'where' => "id={$request_id}"
 ];
 $result = controlMySQL($opt);
 if (!$result) {
@@ -30,7 +30,7 @@ $opt = [
   'method' => 'select',
   'tables' => ['dictionary', 'user_vector'],
   'columns' => ['dictionary.word AS word'],
-  'where' => "user_vector.word_id=dictionary.id AND user_vector.user_id='{$request_id}'",
+  'where' => "user_vector.word_id=dictionary.id AND user_vector.user_id={$request_id}",
   'order' => 'user_vector.tf_idf',
   'limit' => 5
 ];
@@ -42,7 +42,7 @@ $opt = [
   'method' => 'select',
   'tables' => ['news'],
   'columns' => ['id', 'title'],
-  'where' => "author_id='{$request_id}' AND show_flg=1",
+  'where' => "author_id={$request_id} AND show_flg=1",
   'order' => 'create_date',
   'limit' => 5
 ];
@@ -52,7 +52,7 @@ $opt = [
   'method' => 'select',
   'tables' => ['news', 'share'],
   'columns' => ['news.id AS id', 'news.title AS title'],
-  'where' => "news.id=share.news_id AND share.user_id='{$request_id}' AND news.show_flg=1 AND share.valid=1",
+  'where' => "news.id=share.news_id AND share.user_id={$request_id} AND news.show_flg=1 AND share.valid=1",
   'order' => 'share.update_date',
   'limit' => 5
 ];
@@ -65,7 +65,7 @@ if (!$is_owner) {
     'method' => 'select',
     'tables' => ['follow'],
     'columns' => ['valid'],
-    'where' => "follower_id='{$id}' AND followed_id='{$request_id}'"
+    'where' => "follower_id={$id} AND followed_id={$request_id}"
   ];
   $result = controlMySQL($opt);
   $valid = count($result) > 0 ? ($result[0]['valid'] + 1) % 2 : 2;

@@ -20,7 +20,7 @@ $opt = [
   'where' => "user_id='{$id}' AND valid=1"
 ];
 $results = controlMySQL($opt);
-$read_news = [];
+$read_news = [0];
 foreach ($results as $row) $read_news[] = $row['news_id'];
 
 //近くで話題のニュース取得
