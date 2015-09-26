@@ -3,7 +3,6 @@ require_once('common.php');
 require_once('functions/control_MySQL.php');
 require_once('functions/json_endode.php');
 $NEWS_PER_PAGE = 10;
-$page = array_key_exists('page', $_GET) ? $_GET['page'] : 1;
 
 if ($id == 0) {
   //未ログイン
@@ -14,11 +13,12 @@ if ($id == 0) {
     'where' => 'user.id=news.author_id AND news.show_flg=1',
     'order' => 'news.create_date',
     'limit' => $NEWS_PER_PAGE,
-    'offset' => $NEWS_PER_PAGE * ($page - 1)
   ];
   $all_news = controlMySQL($opt);
 } else {
   //ログインユーザー
+
+  //既読ニュース取得
   $opt = [
     'method' => 'select',
     'tables' => ['mark_read'],
@@ -28,6 +28,7 @@ if ($id == 0) {
   $results = controlMySQL($opt);
   $read_news = [];
   foreach ($results as $row) $read_news[] = $row['news_id'];
+  //最新ニュース取得
   $opt = [
     'method' => 'select',
     'tables' =>['news', 'user'],
@@ -42,7 +43,6 @@ if ($id == 0) {
     'where' => "user.id=news.author_id AND news.show_flg=1 AND news.id NOT IN (".implode(", ", $read_news).")",
     'order' => 'news.create_date',
     'limit' => $NEWS_PER_PAGE,
-    'offset' => $NEWS_PER_PAGE * ($page - 1)
   ];
   $results = controlMySQL($opt);
   $latest_news = [];
@@ -88,6 +88,7 @@ if ($id == 0) {
     for (var i = 0; i < latest_news.length; i++) {
       latest_news[i]['date_obj'] = new Date(latest_news[i]['date_str']);
     }
+    var close_news = [];
     </script>
 </head>
 <body>
@@ -106,25 +107,78 @@ if ($id == 0) {
     </tbody>
   </table>
   <hr>
+  <h2>近くで起きたこと</h2>
+  <table class="news" id="close">
+    <thead>
+      <tr>
+        <th>記事タイトル</th>
+        <th>投稿者</th>
+        <th>投稿日</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 
   <script>
-    $(document).ready(function(){
-      var class_names = ['title', 'author', 'date'];
-      var news_template = document.createElement('tr');
-      for (var i = 0; i < class_names.length; i++) {
-        var td = document.createElement('td');
-        td.className = class_names[i];
-        news_template.appendChild(td);
+  function append_news(i) {
+    var category_news = [latest_news, close_news];
+    for (var j = 0; j < category_news[i].length; j++) {
+      var news = $(news_template).clone(true);
+      for (var k = 0; k < class_names.length; k++) {
+        news.find("td:eq("+k+")").html(category_news[i][j][class_names[k]]);
       }
-      for (var i = 0; i < latest_news.length; i++) {
-        var news = $(news_template).clone(true);
-        for (var j = 0; j < class_names.length; j++) {
-          news.find("td:eq("+j+")").html(latest_news[i][class_names[j]]);
-        }
-        $("#latest tbody").append(news);
-        $("#latest tbody tr:eq("+i+")").attr('id', 'latest' + latest_news[i]['news_id']);
-      }
+      $("#"+categories[i]+" tbody").append(news);
+      $("#"+categories[i]+"latest tbody tr:eq("+j+")").attr('id', 'latest' + category_news[i][j]['news_id']);
+    }
+  }
+
+  var categories = ['latest', 'close'];
+  var class_names = ['title', 'author', 'date'];
+  var news_template = document.createElement('tr');
+  for (var i = 0; i < class_names.length; i++) {
+    var td = document.createElement('td');
+    td.className = class_names[i];
+    news_template.appendChild(td);
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position){
+      var latitude = position.coords.latitude,
+        longitude = position.coords.longitude;
+      $.get(
+        'get_news_by_distance.php',
+        {
+          lat: latitude,
+          lon: longitude
+        },
+        // 近くのニュース取得
+        function(data, textStatus) {
+          if (textStatus == 'success') {
+            close_news = JSON.parse(data);
+            for (var row = 0; row < close_news.length; row++) {
+              var news_id = close_news[row]['news_id'];
+              var title = close_news[row]['title']
+              close_news[row]['title'] = '<a href="news.php?id='+news_id+'">'+title+'</a>';
+            }
+            $("#close tbody tr").remove();
+            append_news(1);
+          } else {
+            console.log(textStatus);
+          }
+        },
+        'html'
+      );
+    }, function(){
+      console.log("位置情報取得不可");
     });
+  }
+
+  $(document).ready(function(){
+    for (var i = 0; i < categories.length; i++) {
+      append_news(i);
+    }
+  });
   </script>
 </body>
 </html>
