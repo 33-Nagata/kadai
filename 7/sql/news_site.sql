@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2015 年 9 月 26 日 02:46
+-- Generation Time: 2015 年 9 月 27 日 05:34
 -- サーバのバージョン： 5.6.26
 -- PHP Version: 5.6.12
 
@@ -1240,7 +1240,7 @@ CREATE TABLE IF NOT EXISTS `follow` (
 --
 
 INSERT INTO `follow` (`id`, `follower_id`, `followed_id`, `valid`) VALUES
-(9, 15, 10, 0);
+(9, 15, 10, 1);
 
 -- --------------------------------------------------------
 
@@ -1261,9 +1261,9 @@ CREATE TABLE IF NOT EXISTS `mark_read` (
 
 INSERT INTO `mark_read` (`id`, `user_id`, `news_id`, `valid`) VALUES
 (1, 15, 51, 0),
-(2, 15, 24, 1),
-(3, 15, 25, 1),
-(4, 15, 26, 1);
+(2, 15, 24, 0),
+(3, 15, 25, 0),
+(4, 15, 26, 0);
 
 -- --------------------------------------------------------
 
