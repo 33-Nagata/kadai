@@ -1,24 +1,23 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
-require('login_required.php');
 
+// News ID取得
 if (!isset($_GET['id'])) {
-  $_SESSION['message'] = '<p class="message error">記事を指定してください</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">記事を指定してください</p>';
   header('Location: index.php');
   exit;
 } elseif (!intval($_GET['id'])) {
-  $_SESSION['message'] = '<p class="message error">記事が存在しません</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">記事が存在しません</p>';
   header('Location: index.php');
   exit;
-} else {
-  $news_id = $_GET['id'];
 }
+$news_id = $_GET['id'];
+// POSTデータセット
 $lat = $_POST['lat'];
 $lon = $_POST['lon'];
 $location = $lat != "" && $lon != "" ? "GeomFromText('POINT({$lon} {$lat})')" : NULL;
 $text = $_POST['comment'];
-
+// コメント書き込み
 $opt = [
   'method' => 'insert',
   'tables' => ['comment'],
@@ -32,8 +31,8 @@ $opt = [
   ]
 ];
 controlMySQL($opt);
-
+// ユーザーの関心情報更新
 include('update_user_vector.php');
-
+// 元の記事へ転送
 header("Location: news.php?id={$news_id}");
 ?>

@@ -14,7 +14,7 @@ $opt = [
 ];
 $result = controlMySQL($opt);
 if (count($result) != 0) {
-  $_SESSION['message'] = '<p class="message failure">既に登録されているメールアドレスです</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">既に登録されているメールアドレスです</p>';
   header('Location: login.php');
   exit;
 }

@@ -1,7 +1,11 @@
 <?php
-session_start();
-require_once('functions/control_MySQL.php');
+require_once('common.php');
 
+if (!isset($_POST['email']) || !isset($_POST['password'])) {
+  $_SESSION['message'] = '<p class="alert alert-danger>必要事項が記入されていません</p>"';
+  header('Location: login.php');
+  exit;
+}
 $email = $_POST['email'];
 $password = $_POST['password'];
 
@@ -12,23 +16,15 @@ $opt = [
   'where' => "email='{$email}'"
 ];
 $data = controlMySQL($opt);
-$_SESSION['message'] = '';
-$error_message = '<p class="message failure">メールアドレスまたはパスワードが違います</p>';
-if (count($data) == 0) {
-  $_SESSION['message'] = $error_message;
-} else {
+if (count($data) != 0) {
   foreach ($data as $user) {
     if (password_verify($password, $user['password'])) {
-      $id = $user['id'];
-    } else {
-      $_SESSION['message'] = $error_message;
+      $_SESSION['id'] = $user['id'];
+      header('Location: index.php');
+      exit;
     }
   }
 }
-if ($error_message == $_SESSION['message']) {
-  header('Location: login.php');
-  exit;
-}
-$_SESSION['id'] = $id;
-header('Location: index.php');
+$_SESSION['message'] = '<p class="alert alert-danger>メールアドレスまたはパスワードが違います</p>"';
+header('Location: login.php');
 ?>

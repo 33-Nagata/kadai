@@ -1,24 +1,28 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
-require('login_required.php');
 
 if (!isset($_GET['id'])) {
-  $_SESSION['message'] = '<p class="message error">記事を指定してください</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">記事を指定してください</p>';
   header('Location: index.php');
   exit;
 } elseif (!intval($_GET['id'])) {
-  $_SESSION['message'] = '<p class="message error">記事が存在しません</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">記事が存在しません</p>';
   header('Location: index.php');
   exit;
-} else {
-  $news_id = $_GET['id'];
+}
+$news_id = $_GET['id'];
+
+if (!isset($_POST['lat']) || !isset($_POST['lon']) || !isset($_POST['valid'])) {
+  $_SESSION['message'] = '<p class="alert alert-danger">パラメーターが不正です</p>';
+  header("Location: news.php?id={$news_id}");
+  exit;
 }
 $lat = $_POST['lat'];
 $lon = $_POST['lon'];
 $location = $lat != "" && $lon != "" ? "GeomFromText('POINT({$lon} {$lat})')" : NULL;
 $valid = $_POST['valid'];
 
+// $valid -> 0:非表示, 1:表示, 2:表示(行追加)
 if ($valid < 2) {
   $opt = [
     'method' => 'update',

@@ -1,9 +1,9 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
-require('login_required.php');
 
 //Term Frequency
+
+// コメントかシェアした記事に含まれる単語と使用回数取得
 $common_conditon = 'news_word_frequency.news_id=news.id AND news.show_flg=1';
 $comment_condition = "news_word_frequency.news_id=comment.news_id AND comment.user_id='{$id}' AND comment.show_flg=1";
 $share_condition = "news_word_frequency.news_id=share.news_id AND share.user_id='{$id}' AND share.valid=1";
@@ -17,6 +17,7 @@ $opt = [
 $words = controlMySQL($opt);
 $total = 0;
 foreach ($words as $word) $total += $word['count'];
+// ユーザーベクトルの要素として使用済みの単語取得
 $opt = [
   'method' => 'select',
   'tables' => ['user_vector'],
@@ -25,6 +26,7 @@ $opt = [
 ];
 $results = controlMySQL($opt);
 $resistered_id = [];
+// ベクトル要素初期化
 foreach ($results as $row) {
   $word_id = $row['word_id'];
   $tf[$word_id] = 0;

@@ -1,13 +1,13 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
-require('login_required.php');
 
+// エラー処理
 if (!isset($_POST['id'])) {
-  $_SESSION['message'] = '<p class="message error">フォロー対象が選択されていません</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">フォロー対象が選択されていません</p>';
   header('Location: user.php');
   exit;
 }
+
 $followed_id = $_POST['id'];
 $opt = [
   'method' => 'select',
@@ -16,10 +16,12 @@ $opt = [
   'where' => "id='{$followed_id}'"
 ];
 if (!controlMySQL($opt)) {
-  $_SESSION['message'] = '<p class="message error">対象ユーザーが存在しません</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">対象ユーザーが存在しません</p>';
   header('Location: user.php');
   exit;
 }
+
+// フォローステータス確認
 $opt = [
   'method' => 'select',
   'tables' => ['follow'],
@@ -27,7 +29,7 @@ $opt = [
   'where' => "follower_id='{$id}' AND followed_id='{$followed_id}'"
 ];
 $result = controlMySQL($opt);
-//データがあればフラグを反転・なければ2
+//データがあればフラグを反転・なければ新規追加
 //0:シェアを外す, 1:再度シェアする, 2:新規にシェアする
 $valid = count($result) > 0 ? ($result[0]['valid'] + 1) % 2 : 2;
 

@@ -1,15 +1,13 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
-require('login_required.php');
 
 //includeで呼び出されているか確認
 if (!isset($news_id)) {
-  $_SESSION['message'] = '<p class="message error">不正なアクセスです</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">不正なアクセスです</p>';
   header('Location: login.php');
   exit;
 }
-
+// 記事総数取得
 $opt = [
   'method' => 'select',
   'tables' => ['news'],
@@ -18,6 +16,7 @@ $opt = [
 ];
 $result = controlMySQL($opt);
 $total = $result[0]['sum'];
+// 各単語が使用されている記事数取得
 $opt = [
   'method' => 'select',
   'tables' => ['news_word_frequency', 'news'],

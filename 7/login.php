@@ -2,12 +2,7 @@
 session_start();
 session_destroy();
 
-if (isset($_SESSION['message'])) {
-  $message = $_SESSION['message'];
-  unset($_SESSION['message']);
-} else {
-  $message = "";
-}
+require_once('common.php');
 ?>
 
 <!DOCTYPE html>

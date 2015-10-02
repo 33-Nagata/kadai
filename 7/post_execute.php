@@ -1,11 +1,14 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
 include('yahoo_japan_application_id.php');
 
+if (!isset($_POST['title']) || !isset($_POST['article']) || !isset($_POST['lat']) || !isset($_POST['lon'])) {
+  $_SESSION['message'] = '<p class="alert alert-danger">パラメーターが不正です</p>';
+  header('Location: post.php');
+  exit;
+}
 $title = $_POST['title'];
 $article = $_POST['article'];
-$photo = isset($_FILES['photo']['tmp_name']) && $_FILES['photo']['error'] != UPLOAD_ERR_NO_FILE ? file_get_contents($_FILES['photo']['tmp_name']) : false;
 $lat = $_POST['lat'];
 $lon = $_POST['lon'];
 $location = $lat != "" && $lon != "" ? "GeomFromText('POINT({$lon} {$lat})')" : NULL;
