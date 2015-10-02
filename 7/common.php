@@ -19,7 +19,7 @@ $login_needless = [
   'mysql_config.php',
   'news.php',
   'register.php',
-  'register_execute',
+  'register_execute.php',
   'user.php'
 ];
 if (!in_array($self, $login_needless)) {

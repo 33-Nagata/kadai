@@ -36,5 +36,9 @@ $paramType = [
   //follow
   'follower_id' => PDO::PARAM_INT,
   'followed_id' => PDO::PARAM_INT,
+  // img
+  'table_name' => PDO::PARAM_STR,
+  'content_id' => PDO::PARAM_INT,
+  'file_name' => PDO::PARAM_STR,
 ];
 ?>
