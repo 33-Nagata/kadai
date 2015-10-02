@@ -2,20 +2,7 @@
 session_start();
 session_destroy();
 
-if (array_key_exists('error', $_GET)) {
-  $error_message = '<p class="error message">';
-  switch ($_GET['error']) {
-    case '0':
-      $error_message .= '登録に失敗しました';
-      break;
-    default:
-      $error_message .= '未知のエラーです';
-      break;
-  }
-  $error_message .= '</p>';
-} else {
-  $error_message = "";
-}
+require_once('common.php');
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +17,7 @@ if (array_key_exists('error', $_GET)) {
 </head>
 <body>
   <div class="container">
-    <?php echo $error_message; ?>
+    <?php echo $message; ?>
     <form class="form-signin" action="register_execute.php" method="post" enctype="multipart/form-data">
       <label for="name">名前</label>
       <input name="name" type="text" required>

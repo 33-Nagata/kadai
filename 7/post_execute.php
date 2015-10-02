@@ -20,48 +20,46 @@ $opt = [
     'location' => $location,
   ]
 ];
-if ($photo) $opt['columns']['photo'] = $photo;
 $news_id = insertNews($opt);
-
-//テキスト解析
-$used_words = getNounCounts($article);
-
-//既登録単語取得
-$old_words = getWordIds(array_keys($used_words));
-
-//未登録単語登録
-saveNewWords(array_keys($used_words), $old_words);
-
-//単語のid取得
-$ids = getWordIds(array_keys($used_words));
-foreach ($ids as $index => $word) {
-  $word_list[$index] = [
-    'word' => $word,
-    'frequency' => $used_words[$word]
-  ];
-}
-
-//記事中の単語使用回数登録
-$opt = [
-  'table' => 'news_word_frequency',
-  'columns' => ['news_id', 'word_id', 'frequency'],
-  'values' => []
-];
-foreach ($word_list as $word_id => $word_data) {
-  $frequency = $word_data['frequency'];
-  $opt['values'][] = [$news_id, $word_id, $frequency];
-}
-insertMultiColumns($opt);
-
-//記事のvector登録
-include("update_news_vector.php");
-
-//結果表示
 if ($news_id) {
-  $_SESSION['message'] = '<p class="message success">記事を投稿しました</p>';
+  // 画像保存
+  $target_id = $news_id;
+  $table_name = 'news';
+  include('save_img.php');
+
+  //テキスト解析
+  $used_words = getNounCounts($article);
+  //既登録単語取得
+  $old_words = getWordIds(array_keys($used_words));
+  //未登録単語登録
+  saveNewWords(array_keys($used_words), $old_words);
+  //単語のid取得
+  $ids = getWordIds(array_keys($used_words));
+  foreach ($ids as $index => $word) {
+    $word_list[$index] = [
+      'word' => $word,
+      'frequency' => $used_words[$word]
+    ];
+  }
+  //記事中の単語使用回数登録
+  $opt = [
+    'table' => 'news_word_frequency',
+    'columns' => ['news_id', 'word_id', 'frequency'],
+    'values' => []
+  ];
+  foreach ($word_list as $word_id => $word_data) {
+    $frequency = $word_data['frequency'];
+    $opt['values'][] = [$news_id, $word_id, $frequency];
+  }
+  insertMultiColumns($opt);
+  //記事のvector登録
+  include("update_news_vector.php");
+
+  //結果表示
+  $_SESSION['message'] = '<p class="alert alert-success">記事を投稿しました</p>';
   header("Location: news.php?id={$news_id}");
 } else {
-  $_SESSION['message'] = '<p class="message failure">記事の投稿に失敗しました</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">記事の投稿に失敗しました</p>';
   $_SESSION['title'] = $title;
   $_SESSION['article'] = $article;
   header('Location: post.php');
