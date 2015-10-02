@@ -28,6 +28,7 @@ if (isset($_SESSION['title']) && isset($_SESSION['article'])) {
     <link rel="stylesheet" href="../css/style.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
 </head>
 <body>
   <?php echo $message; ?>
@@ -44,14 +45,19 @@ if (isset($_SESSION['title']) && isset($_SESSION['article'])) {
   </form>
 
   <script>
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position){
-      $("input[name=lat]").val(position.coords.latitude);
-      $("input[name=lon]").val(position.coords.longitude);
-    }, function(){
-      console.log("位置情報取得不可");
-    });
-  }
+  $(document).on('ready', function(){
+    // WYSIWYGセット
+    tinymce.init({selector:'textarea'});
+    // 位置情報取得
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position){
+        $("input[name=lat]").val(position.coords.latitude);
+        $("input[name=lon]").val(position.coords.longitude);
+      }, function(){
+        console.log("位置情報取得不可");
+      });
+    }
+  });
   </script>
 </body>
 </html>
