@@ -1,37 +1,42 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
 
-$news_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : 0;
+// パラメーター確認
+if (!isset($_GET['id']) || !intval($_GET['id'])) {
+  $_SESSION['message'] = '<p class="alert alert-danger">パラメーターが不正です</p>';
+  header('Location: index.php');
+  exit;
+}
+// 記事取得
+$news_id = $_GET['id'];
 $opt = [
   'method' => 'select',
-  'tables' => ['news', 'user'],
+  'tables' => ['news', 'user', 'img'],
   'columns' => [
-    'news.id',
-    'news.title',
-    'news.author_id',
-    'news.photo IS NOT NULL AS is_photo',
-    'news.article',
-    'user.name'
+    'news.id AS news_id',
+    'news.title AS title',
+    'news.author_id AS author_id',
+    'img.file_name AS img',
+    'news.article AS article',
+    'user.name AS name'
   ],
-  'where' => "news.id={$news_id} AND user.id=news.author_id AND news.show_flg=1"
+  'where' => "news.id={$news_id} AND user.id=news.author_id AND news.show_flg=1 AND img.content_id=news.id"
 ];
 $news = controlMySQL($opt);
 if (count($news) == 0) {
-  $_SESSION['message'] = '<p class="message error">記事が存在しません</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">記事が存在しません</p>';
   header('Location: index.php');
   exit;
 }
 //使用変数用意
-$news_id = $news[0]['id'];
+$news_id = $news[0]['news_id'];
 $title = $news[0]['title'];
 $author_id = $news[0]['author_id'];
 $article = $news[0]['article'];
-$is_photo = $news[0]['is_photo'];
-$photo_src = "get_img.php?table=news&id={$news_id}";
+$img = $news[0]['img'] != null ? $news[0]['img'] : false;
 $author = $news[0]['name'];
 $is_owner = $id == $author_id;
-
+// シェア数取得
 $opt = [
   'method' => 'select',
   'tables' => ['share'],
@@ -72,27 +77,26 @@ $opt = [
 ];
 $result = controlMySQL($opt);
 $count = $result[0]['count'];
-$unmark = $count !== false;
-if ($unmark) {
-  if ($count == 0) {
-    $opt = [
-      'method' => 'insert',
-      'tables' => ['mark_read'],
-      'columns' => [
-        'user_id' => $id,
-        'news_id' => $news_id,
-        'valid' => 1
-      ]
-    ];
-  } else {
-    $opt = [
-      'method' => 'update',
-      'tables' => ['mark_read'],
-      'columns' => ['valid' => 1],
-      'where' => "user_id='{$id}' AND news_id='{$news_id}'"
-    ];
-  }
-  controlMySQL($opt);
+// レコードなし
+if ($count == 0) {
+  $opt = [
+    'method' => 'insert',
+    'tables' => ['mark_read'],
+    'columns' => [
+      'user_id' => $id,
+      'news_id' => $news_id,
+      'valid' => 1
+    ]
+  ];
+// レコードあり
+} else {
+  $opt = [
+    'method' => 'update',
+    'tables' => ['mark_read'],
+    'columns' => ['valid' => 1],
+    'where' => "user_id='{$id}' AND news_id='{$news_id}'"
+  ];
+controlMySQL($opt);
 }
 ?>
 
@@ -111,17 +115,15 @@ if ($unmark) {
 <body>
   <?php echo $message; ?>
   <h1><?php echo h($title); ?></h1>
-  <?php if ($is_photo): ?>
-    <img src="<?php echo $photo_src; ?>" />
+  <?php if ($img): ?>
+    <img src="img/<?php echo $img; ?>" />
   <?php endif; ?>
   <p><?php echo h($author); ?></p>
   <article><?php echo h($article); ?></article>
-  <?php if ($unmark): ?>
-    <form action="unmark_read.php" method="post">
-      <input name="news_id" type="hidden" value="<?php echo $news_id; ?>">
-      <input type="submit" value="未読にする">
-    </form>
-  <?php endif; ?>
+  <form action="unmark_read.php" method="post">
+    <input name="news_id" type="hidden" value="<?php echo $news_id; ?>">
+    <input type="submit" value="未読にする">
+  </form>
   <?php if ($is_owner): ?>
     <a href="delete_news.php?id=<?php echo $news_id; ?>"><button>削除</button></a>
   <?php else: ?>

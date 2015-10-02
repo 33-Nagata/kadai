@@ -1,6 +1,5 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
 
 if ($id == 0 && !isset($_GET['id'])) {
   header('Location: login.php');
@@ -10,20 +9,19 @@ if ($id == 0 && !isset($_GET['id'])) {
 $request_id = isset($_GET['id']) ? $_GET['id'] : $id;
 $opt = [
   'method' => 'select',
-  'tables' => ['user'],
-  'columns' => ['name', 'email', 'photo IS NOT NULL AS is_photo'],
-  'where' => "id={$request_id}"
+  'tables' => ['user', 'img'],
+  'columns' => ['user.name AS name', 'user.email AS email', 'img.file_name AS img'],
+  'where' => "img.content_id=user.id AND user.id={$request_id}"
 ];
 $result = controlMySQL($opt);
 if (!$result) {
-  $_SESSION['message'] = '<p class="message error">ユーザーが存在しません</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">ユーザーが存在しません</p>';
   header('Location: login.php');
   exit;
 } else {
   $name = $result[0]['name'];
   $email = $result[0]['email'];
-  $is_photo = $result[0]['is_photo'];
-  $photo_src = "get_img.php?table=user&id={$request_id}";
+  $img = $result[0]['img'];
 }
 //関心ワード取得
 $opt = [
@@ -90,8 +88,8 @@ if (!$is_owner) {
   <?php if ($is_owner): ?>
     <p>メールアドレス：<?php echo h($email); ?></p>
   <?php endif; ?>
-  <?php if ($is_photo): ?>
-    <p>プロフィール写真：<img src="<?php echo $photo_src; ?>" /></p>
+  <?php if ($img != null): ?>
+    <p>プロフィール写真：<img src="img/<?php echo $img; ?>" /></p>
   <?php endif; ?>
   <p>関心のあるワード：<?php echo implode(', ', $interests); ?></p>
   <?php if ($is_owner): ?>
