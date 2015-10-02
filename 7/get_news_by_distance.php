@@ -1,9 +1,6 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
 require_once('functions/json_endode.php');
-require('login_required.php');
-$NEWS_PER_PAGE = 10;
 
 if (!isset($_GET['lat']) || !isset($_GET['lon'])) {
   exit;
