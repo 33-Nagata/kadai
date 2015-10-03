@@ -9,20 +9,26 @@ if ($id == 0 && !isset($_GET['id'])) {
 $request_id = isset($_GET['id']) ? $_GET['id'] : $id;
 $opt = [
   'method' => 'select',
-  'tables' => ['user', 'img'],
-  'columns' => ['user.name AS name', 'user.email AS email', 'img.file_name AS img'],
-  'where' => "img.content_id=user.id AND user.id={$request_id}"
+  'tables' => ['user'],
+  'columns' => ['user.name AS name', 'user.email AS email'],
+  'where' => "user.id={$request_id}"
 ];
 $result = controlMySQL($opt);
 if (!$result) {
   $_SESSION['message'] = '<p class="alert alert-danger">ユーザーが存在しません</p>';
   header('Location: login.php');
   exit;
-} else {
-  $name = $result[0]['name'];
-  $email = $result[0]['email'];
-  $img = $result[0]['img'];
 }
+$name = $result[0]['name'];
+$email = $result[0]['email'];
+$opt = [
+  'method' => 'select',
+  'tables' => ['img'],
+  'columns' => ['file_name'],
+  'where' => "table_name='user' AND content_id={$id}"
+];
+$result = controlMySQL($opt);
+$img = $result ? $result[0]['file_name'] : null;
 //関心ワード取得
 $opt = [
   'method' => 'select',
