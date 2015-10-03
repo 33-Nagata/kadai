@@ -17,6 +17,8 @@ $location = $lat != "" && $lon != "" ? "GeomFromText('POINT({$lon} {$lat})')" : 
 include('functions/control_news.php');
 //記事保存
 $opt = [
+  'method' => 'insert',
+  'tables' => ['news'],
   'columns' => [
     'title' => $title,
     'article' => $article,
@@ -56,7 +58,7 @@ if ($news_id) {
     $frequency = $word_data['frequency'];
     $opt['values'][] = [$news_id, $word_id, $frequency];
   }
-  insertMultiColumns($opt);
+  controlMySQL($opt);
   //記事のvector登録
   include("update_news_vector.php");
 
