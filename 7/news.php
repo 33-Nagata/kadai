@@ -1,5 +1,6 @@
 <?php
 require_once('common.php');
+include_once('functions/img.php');
 
 // パラメーター確認
 if (!isset($_GET['id']) || !intval($_GET['id'])) {
@@ -11,16 +12,15 @@ if (!isset($_GET['id']) || !intval($_GET['id'])) {
 $news_id = $_GET['id'];
 $opt = [
   'method' => 'select',
-  'tables' => ['news', 'user', 'img'],
+  'tables' => ['news', 'user'],
   'columns' => [
     'news.id AS news_id',
     'news.title AS title',
     'news.author_id AS author_id',
-    'img.file_name AS img',
     'news.article AS article',
     'user.name AS name'
   ],
-  'where' => "news.id={$news_id} AND user.id=news.author_id AND news.show_flg=1 AND img.content_id=news.id"
+  'where' => "news.id={$news_id} AND user.id=news.author_id AND news.show_flg=1"
 ];
 $news = controlMySQL($opt);
 if (count($news) == 0) {
@@ -33,7 +33,7 @@ $news_id = $news[0]['news_id'];
 $title = $news[0]['title'];
 $author_id = $news[0]['author_id'];
 $article = $news[0]['article'];
-$img = $news[0]['img'] != null ? $news[0]['img'] : false;
+$img = getImg('news', $news_id);
 $author = $news[0]['name'];
 $is_owner = $id == $author_id;
 // シェア数取得

@@ -1,5 +1,6 @@
 <?php
 require_once('common.php');
+include_once('functions/img.php');
 
 if ($id == 0 && !isset($_GET['id'])) {
   header('Location: login.php');
@@ -21,14 +22,7 @@ if (!$result) {
 }
 $name = $result[0]['name'];
 $email = $result[0]['email'];
-$opt = [
-  'method' => 'select',
-  'tables' => ['img'],
-  'columns' => ['file_name'],
-  'where' => "table_name='user' AND content_id={$id}"
-];
-$result = controlMySQL($opt);
-$img = $result ? $result[0]['file_name'] : null;
+$img = getImg('user', $id);
 //関心ワード取得
 $opt = [
   'method' => 'select',
