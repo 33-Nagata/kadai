@@ -54,12 +54,13 @@ controlMySQL($opt);
 $new_ids = array_diff(array_keys($tf_idf), $resistered_id);
 if (count($new_ids) > 0) {
   $opt = [
-    'table' => 'user_vector',
+    'method' => 'insert',
+    'tables' => ['user_vector'],
     'columns' => ['user_id', 'word_id', 'tf_idf'],
     'values' => []
   ];
   foreach ($new_ids as $word_id) $opt['values'][] = [$id, $word_id, $tf_idf[$word_id]];
-  insertMultiColumns($opt);
+  controlMySQL($opt);
 }
 foreach ($resistered_id as $word_id) {
   $opt = [

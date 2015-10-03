@@ -136,45 +136,6 @@ function controlMySQL ($opt) {
   return $result;
 }
 
-function insertMultiColumns($opt) {
-  require("mysql_config.php");
-  /*
-  $opt = [
-    'table' => table_name,
-    'columns' => [column_name1, column_name2],
-    'values' => [
-      [value1, value2],
-      [value3, value4]
-    ]
-  ];
-  */
-  $table = $opt['table'];
-  $columns = $opt['columns'];
-  $column = implode(', ', $columns);
-  $values = $opt['values'];
-  $pdo = new PDO('mysql:host='.$host.';dbname='.$dbname.';charset='.$charset, $user, $password);
-  $sql = "INSERT INTO {$table} ({$column}) VALUES ";
-  $set = [];
-  foreach ($values as $index => $value) {
-    // (:'column1'1, :'column2'1)
-    // (:'column1'2, :'column2'2)
-    $set[] = '(:'.implode("{$index}, :", $columns).$index.')';
-  }
-  $sql .= implode(', ', $set);
-  $stmt = $pdo->prepare($sql);
-  for ($i=0;$i<count($values);$i++) {
-    $row = $values[$i];
-    foreach ($columns as $j => $column) {
-      $placeHolder = ':'.$column.$i;
-      $stmt->bindValue($placeHolder, $row[$j], $paramType[$column]);
-    }
-  }
-  $last_id = false;
-  if ($stmt->execute()) $last_id = $pdo->lastInsertId();
-  $pdo = NULL;
-  return $last_id;
-}
-
 function isHash ($array) {
   return array_values($array) !== $array;
 }
