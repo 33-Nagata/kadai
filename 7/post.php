@@ -36,7 +36,7 @@ if (isset($_SESSION['title']) && isset($_SESSION['article'])) {
     <label for="title">タイトル</label>
     <input name="title" type="text" value="<?php echo $title; ?>" required>
     <label for="article">記事</label>
-    <textarea name="article" value="<?php echo $article; ?>" required></textarea>
+    <textarea name="article" value="<?php echo $article; ?>"></textarea>
     <label for="photo">写真</label>
     <input name="photo" type="file">
     <input name="lat" type="hidden" value="">
@@ -47,7 +47,9 @@ if (isset($_SESSION['title']) && isset($_SESSION['article'])) {
   <script>
   $(document).on('ready', function(){
     // WYSIWYGセット
-    tinymce.init({selector:'textarea'});
+    tinymce.init({
+      selector: "textarea"
+    });
     // 位置情報取得
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position){
