@@ -14,7 +14,7 @@ if (isset($css)) {
     }
   }
 }
-$js_link = "";
+$js_link = '';
 if (isset($js)) {
   if (!is_array($js)) {
     $js_link = "<script src='{$js}'></script>";
@@ -29,7 +29,7 @@ if (isset($js)) {
 <!DOCTYPE html>
 <html>
 <head>
-  <title><?php echo $page_title; ?></title>
+  <title><?php echo $head_title; ?></title>
   <meta charset="UTF-8">
   <meta name="description" content="<?php echo $meta_description; ?>" />
   <meta name="author" content="<?php echo $meta_author; ?>" />
