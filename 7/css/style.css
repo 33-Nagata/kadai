@@ -1,0 +1,43 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+header {
+  height: 60px;
+}
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.navbar-header {
+  float: left;
+}
+
+.content {
+  margin-top: 10px;
+}
+
+.btn-header {
+  margin: 10px 0px 10px 5px;
+}
+
+li[class=active] {
+  opacity: .5;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+}
+
+footer p {
+  margin: 15px 0px;
+}
