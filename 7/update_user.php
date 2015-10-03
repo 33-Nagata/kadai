@@ -1,32 +1,33 @@
 <?php
 require_once('common.php');
-require_once('functions/control_MySQL.php');
+include_once('functions/img.php');
+
 if ($id == 0) {
-  $_SESSION['message'] = '<p class="message error">ログインしてください</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">ログインしてください</p>';
   header('Location: login.php');
   exit;
 }
 $request_id = isset($_GET['id']) ? $_GET['id'] : $id;
 if ($id != $request_id) {
-  $_SESSION['message'] = '<p class="message error">編集したいユーザーアカウントでログインしてください</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">編集したいユーザーアカウントでログインしてください</p>';
   header('Location: user.php?id={$request_id}');
   exit;
 }
 $opt = [
   'method' => 'select',
   'tables' => ['user'],
-  'columns' => ['name', 'email', 'photo'],
+  'columns' => ['name', 'email'],
   'where' => "id='{$request_id}'"
 ];
 $result = controlMySQL($opt);
 if (!$result) {
-  $_SESSION['message'] = '<p class="message error">ユーザーが存在しません</p>';
+  $_SESSION['message'] = '<p class="alert alert-danger">ユーザーが存在しません</p>';
   header('Location: login.php');
   exit;
 }
 $name = $result[0]['name'];
 $email = $result[0]['email'];
-$photo_src = "http://127.0.0.1/kadai/news_site/get_img.php?table=user&id={$request_id}";
+$img = getImg('user', $request_id);
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +54,9 @@ $photo_src = "http://127.0.0.1/kadai/news_site/get_img.php?table=user&id={$reque
     <label for="confirm">パスワード(確認用)</label>
     <input name="confirm" type="password">
     <label for="photo">プロフィール画像</label>
-    <img src="<?php echo $photo_src; ?>" />
+    <?php if ($img): ?>
+      <img src="img/<?php echo $img; ?>" />
+    <?php endif; ?>
     <input name="photo" type="file">
     <input id="submit" type="submit" value="変更">
     <button id="clear">クリア</button>
