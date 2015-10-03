@@ -199,6 +199,5 @@ if ($id == 0) {
   }
 }
 
-$content = 'contents/'.basename($_SERVER['PHP_SELF']);
-include('template.php');
+include('view.php');
 ?>

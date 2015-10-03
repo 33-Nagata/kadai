@@ -4,7 +4,6 @@ require_once('functions/control_MySQL.php');
 require('config.php');
 include_once('functions/output.php');
 
-
 if (isset($_SESSION['id']) && intval($_SESSION['id'])) {
   $id = $_SESSION['id'];
 } else {

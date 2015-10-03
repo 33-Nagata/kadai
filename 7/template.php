@@ -27,7 +27,7 @@ if (isset($js)) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <title><?php echo $head_title; ?></title>
   <meta charset="UTF-8">

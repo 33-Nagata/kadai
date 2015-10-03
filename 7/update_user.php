@@ -28,59 +28,6 @@ if (!$result) {
 $name = $result[0]['name'];
 $email = $result[0]['email'];
 $img = getImg('user', $request_id);
+
+include('view.php');
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-    <meta charset="UTF-8">
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/style.css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-</head>
-<body>
-  <?php echo $message; ?>
-  <form action="update_user_execute.php" method="post" enctype="multipart/form-data">
-    <label for="name">名前</label>
-    <input name="name" type="text" value="<?php echo $name; ?>" required>
-    <label for="email">メールアドレス</label>
-    <input name="email" type="email" value="<?php echo $email; ?>" required>
-    <label for="password">パスワード</label>
-    <input name="password" type="password">
-    <label for="confirm">パスワード(確認用)</label>
-    <input name="confirm" type="password">
-    <label for="photo">プロフィール画像</label>
-    <?php if ($img): ?>
-      <img src="img/<?php echo $img; ?>" />
-    <?php endif; ?>
-    <input name="photo" type="file">
-    <input id="submit" type="submit" value="変更">
-    <button id="clear">クリア</button>
-  </form>
-  <a href="user.php?id=<?php echo $request_id; ?>">ユーザー情報へ戻る</a>
-
-  <script>
-    function confirm_passwords(){
-      var pwd1 = $("input[name=password]").val();
-      var pwd2 = $("input[name=confirm]").val();
-      if (pwd1 == pwd2) {
-        $("#submit").removeAttr("disabled");
-      } else {
-        $("#submit").attr("disabled", "disabled");
-      }
-    }
-    $(document).ready(function(){
-      $("input[name=password]").on("change", function(){
-        confirm_passwords();
-      });
-      $("input[name=confirm]").on("change", function(){
-        confirm_passwords();
-      });
-    });
-  </script>
-</body>
-</html>

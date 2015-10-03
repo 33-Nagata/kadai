@@ -42,3 +42,55 @@ li[class=active] {
 footer p {
   margin: 15px 0px;
 }
+
+.form-signin,
+.form-signup,
+.form-user_update {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-post {
+  max-width: 800px;
+  margin: auto;
+}
+
+.form-post h2 {
+  text-align: center;
+}
+
+.form-post input[name=title],
+.form-post input[name=photo] {
+  width: 400px;
+  width: 50%;
+  max-width: 400px;
+  min-width: 353px;
+}
+
+.form-post input[type=submit] {
+  width: 30%;
+  margin: auto;
+}
+
+.form-signup input[type=submit],
+.form-signup button,
+.form-user_update input[type=submit],
+.form-user_update button {
+  width: 50%;
+  margin-top: 10px;
+}
+
+.form-signup input[type=submit],
+.form-user_update input[type=submit] {
+  float: left;
+}
+
+.form-signup button,
+.form-user_update button {
+  float: right;
+}
+
+.form-user_update a {
+  clear: both;
+}
