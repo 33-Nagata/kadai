@@ -40,11 +40,12 @@ function getNounCounts ($raw_sentence) {
   $xml = new SimpleXMLElement(curl_exec($ch));
   curl_close($ch);
   $num_str = ['.', ','];
+  // 数字のみのものを除外
   for ($i=0; $i < 10; $i++) {
     $num_str[] = (string)$i;
   }
   foreach ($xml->uniq_result->word_list->word as $data) {
-    $noun = (string)$data->surface;
+    $noun = mb_strtolower((string)$data->surface);
     $count = (int)$data->count;
     $is_str = false;
     for ($i=0; $i < mb_strlen($noun); $i++) {
@@ -54,14 +55,18 @@ function getNounCounts ($raw_sentence) {
         break;
       }
     }
-    if ($is_str) $results[$noun] = $count;
+    if ($is_str) {
+      if (isset($results[$noun])) {
+        $results[$noun] += $count;
+      } else {
+        $results[$noun] = $count;
+      }
+    }
   }
   return $results;
 }
 
 function getWordIds ($words) {
-  require_once('functions/control_MySQL.php');
-
   $opt = [
     'method' => 'select',
     'tables' => ['dictionary'],
@@ -70,20 +75,24 @@ function getWordIds ($words) {
   ];
   $data = controlMySQL($opt);
   $results = [];
-  foreach ($data as $row) $results[$row['id']] = $row['word'];
+  foreach ($data as $row) $results[$row['id']] = mb_strtolower($row['word']);
   return $results;
 }
 
 function saveNewWords ($all, $old) {
-  $new = array_diff($all, $old);
+  $new = [];
+  foreach ($all as $word_in_all) {
+    foreach ($old as $word_in_old) {
+      if (mb_strtolower($word_in_all) == mb_strtolower($word_in_old)) $new[] = $word_in_all;
+    }
+  }
   $opt = [
+    'method' => 'insert',
     'table' => 'dictionary',
     'columns' => ['word'],
     'values' => []
   ];
-  foreach ($new as $word) {
-    $opt['values'][] = [$word];
-  }
-  insertMultiColumns($opt);
+  foreach ($new as $word) $opt['values'][] = [$word];
+  controlMySQL($opt);
 }
 ?>
