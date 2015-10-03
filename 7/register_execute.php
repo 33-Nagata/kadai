@@ -1,5 +1,6 @@
 <?php
 require_once('common.php');
+include_once('functions/img.php');
 
 // POSTデータセット
 $name = $_POST['name'];
@@ -32,8 +33,7 @@ $opt = [
 $target_id = controlMySQL($opt);
 if ($target_id) {
   // 画像保存
-  $table_name = 'user';
-  include('save_img.php');
+  if (isset($_FILES['photo'])) saveImg('user', $target_id, $_FILES['photo']);
   // user.phpへ転送
   $_SESSION['message'] = '<p class="alert alert-success">登録完了</p>';
   $_SESSION['id'] = $target_id;

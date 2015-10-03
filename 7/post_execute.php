@@ -1,5 +1,6 @@
 <?php
 require_once('common.php');
+include_once('functions/img.php');
 include('yahoo_japan_application_id.php');
 
 if (!isset($_POST['title']) || !isset($_POST['article']) || !isset($_POST['lat']) || !isset($_POST['lon'])) {
@@ -26,27 +27,28 @@ $opt = [
 $news_id = insertNews($opt);
 if ($news_id) {
   // 画像保存
-  $target_id = $news_id;
-  $table_name = 'news';
-  include('save_img.php');
-
+  if (isset($_FILES['photo'])) saveImg('news', $news_id, $_FILES['photo']);
   //テキスト解析
-  $used_words = getNounCounts($article);
+  $used_words = getNounCounts($article); // [word => frequency]
   //既登録単語取得
-  $old_words = getWordIds(array_keys($used_words));
+  $old_words = getWordIds(array_keys($used_words)); // [word_id => word]
   //未登録単語登録
   saveNewWords(array_keys($used_words), $old_words);
   //単語のid取得
-  $ids = getWordIds(array_keys($used_words));
+  $ids = getWordIds(array_keys($used_words)); // [word_id => word]
   foreach ($ids as $index => $word) {
-    $word_list[$index] = [
-      'word' => $word,
-      'frequency' => $used_words[$word]
-    ];
+    // 半角スペースが間に入ったもの等がMySQLで引っかかるので除外
+    if (isset($used_words[mb_strtolower($word)])) {
+      $word_list[$index] = [
+        'word' => mb_strtolower($word),
+        'frequency' => $used_words[mb_strtolower($word)]
+      ];
+    }
   }
   //記事中の単語使用回数登録
   $opt = [
-    'table' => 'news_word_frequency',
+    'method' => 'insert',
+    'tables' => ['news_word_frequency'],
     'columns' => ['news_id', 'word_id', 'frequency'],
     'values' => []
   ];
