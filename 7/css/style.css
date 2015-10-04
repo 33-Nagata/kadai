@@ -94,3 +94,19 @@ footer p {
 .form-user_update a {
   clear: both;
 }
+
+.news {
+  width: 100%;
+}
+
+.news th {
+  text-align: center;
+}
+
+.news .news_date {
+  width: 70px;
+}
+
+.news td {
+  height: 25px;
+}

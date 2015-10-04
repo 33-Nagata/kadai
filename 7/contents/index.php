@@ -3,9 +3,9 @@
 <table class="news" id="latest">
   <thead>
     <tr>
-      <th>記事タイトル</th>
-      <th>投稿者</th>
-      <th>投稿日</th>
+      <th class="news_title">記事タイトル</th>
+      <th class="news_author">投稿者</th>
+      <th class="news_date">投稿日</th>
     </tr>
   </thead>
   <tbody>
@@ -69,13 +69,18 @@ var latest_news = <?php echo json_safe_encode($latest_news); ?>;
 for (var i = 0; i < latest_news.length; i++) {
   latest_news[i]['date_obj'] = new Date(latest_news[i]['date_str']);
 }
-var follow_news = <?php echo json_safe_encode($follow_news); ?>;
-for (var i = 0; i < follow_news.length; i++) {
-  follow_news[i]['date_obj'] = new Date(follow_news[i]['date_str']);
-}
-var interest_news = <?php echo json_safe_encode($interest_news); ?>;
+var follow_news = [];
+var interest_news = [];
 var close_news = [];
 var popular_news = [];
+
+function set_news_title(news_array) {
+  for (var row = 0; row < news_array.length; row++) {
+    var news_id = news_array[row]['news_id'];
+    var title = news_array[row]['title'];
+    news_array[row]['title'] = '<a href="news.php?id='+news_id+'">'+title+'</a>';
+  }
+}
 
 function index_of(value, array) {
   for (var i = 0; i < array.length; i++) {
@@ -160,6 +165,43 @@ if (navigator.geolocation) {
 }
 
 $(document).ready(function(){
+  // フォローしている人が話題にしているニュース取得
+  $.get(
+    'get_follow_news.php',
+    {},
+    function(data, textStatus) {
+      if (textStatus == 'success') {
+        follow_news = JSON.parse(data);
+        set_news_title(follow_news);
+        for (var i = 0; i < follow_news.length; i++) {
+          follow_news[i]['date_obj'] = new Date(follow_news[i]['date_str']);
+        }
+        $("#follow tbody tr").remove();
+        append_news(index_of('follow', categories));
+      } else {
+        console.log(textStatus);
+      }
+    }
+  );
+  // 関心のありそうなニュース取得
+  $.get(
+    'get_interest_news.php',
+    {},
+    function(data, textStatus) {
+      if (textStatus == 'success') {
+        interest_news = JSON.parse(data);
+        set_news_title(interest_news);
+        for (var i = 0; i < interest_news.length; i++) {
+          interest_news[i]['date_obj'] = new Date(interest_news[i]['date_str']);
+        }
+        $("#interest tbody tr").remove();
+        append_news(index_of('interest', categories));
+      } else {
+        console.log(textStatus);
+      }
+    }
+  );
+
   for (var i = 0; i < categories.length; i++) {
     append_news(i);
   }
