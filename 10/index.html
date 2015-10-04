@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta property="og:title" content="LINE風チャットアプリ" />
+  <meta property="og:type" content="chat" />
+  <meta property="og:description" content="BaaS（Milkcocoa）で作られたリアルタイムチャット" />
+  <title>LINE風チャットアプリ</title>
+  <link rel="stylesheet" href="style.css" type="text/css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="http://cdn.mlkcca.com/v2.0.0/milkcocoa.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+
+  <script>
+  var last_message;
+  $(function() {
+    //1.ミルクココアインスタンスを作成
+    var milkcocoa = new MilkCocoa("teaifc51u4b.mlkcca.com");
+    //2."message"データストアを作成
+    var ds = milkcocoa.dataStore("message");
+    //3."message"データストアからメッセージを取ってくる
+    ds.stream().sort("desc").next(function(err, datas) {
+      datas.forEach(function(data) {
+        renderMessage(data);
+      });
+    });
+    //4."message"データストアのプッシュイベントを監視
+    ds.on("push", function(e) {
+      renderMessage(e);
+    });
+    //5."message"データストアにメッセージをプッシュする
+    $('#post').on('click', function () {
+      post(ds);
+    })
+    $('#content').on('keydown', function (e) {
+      if (e.which == 13){
+        post(ds);
+        return false;
+      }
+    });
+    // 後から追加した要素にもイベント適用させるため親要素に設定
+    $('#messages').on('click', '.delete-btn', function(){
+      var id = $(this).attr('id');
+      id = id.substring('delete'.length, id.length);
+      deleteMessage(ds, id);
+    });
+    $('#delete').on('click', function(){
+      deleteAllMessages(ds);
+    });
+  });
+  function renderMessage(message) {
+    var date_html = '<p class="post-date">'+escapeHTML( new Date(message.timestamp).toLocaleString())+'</p>';
+    var name_html = '<p class="post-name">' + escapeHTML(message.value.name+'@'+message.value.hash.substr(0,5)) + '</p>';
+    var message_html = '<p class="post-text">' + escapeHTML(message.value.content) + '</p>';
+    var delete_html = '<button class="delete-btn" id="delete'+message.id+'">削除</button>';
+    var new_html = '<div id="'+message.id+'" class="post">'+date_html + name_html + message_html + delete_html+'</div>';
+    if (last_message) {
+      $("#"+last_message).before(new_html);
+    } else {
+      $('#messages').append(new_html);
+    }
+    last_message = message.id;
+  }
+  function post(dataStore) {
+    var name = escapeHTML($("input[name=name]").val());
+    var hash = escapeHTML(CryptoJS.MD5($("input[name=email]").val()));
+    var content = escapeHTML($("#content").val());
+    if (content && content !== "") {
+      dataStore.push(
+        {
+          name: name,
+          hash: hash,
+          content: content
+        },
+        function (e) {}
+      );
+    }
+    $("#content").val("");
+  }
+  function deleteMessage(dataStore, id) {
+    var result;
+    dataStore.remove(
+      id,
+      function(err, data){
+        if (err != null) {
+          console.log(err);
+          result = false;
+        }
+        result = true;
+      },
+      function(err){
+        console.log(err);
+        result = false;
+      }
+    );
+    if (result) {
+      $('#'+id).remove();
+      last_message = $(".post:first").attr('id');
+    }
+    return result;
+  }
+  function deleteAllMessages(dataStore) {
+    while (last_message) {
+      deleteMessage(dataStore, last_message);
+    }
+  }
+  //インジェクション対策
+  function escapeHTML(val) {
+    return $('<div>').text(val).html();
+  };
+  </script>
+</head>
+
+<body>
+  <div class="header">
+    <h1 class="logo">LINE風チャットアプリ</h1>
+  </div>
+  <div class="container">
+    <div class="postarea cf">
+      <input type="text" name="name" placeholder="名前">
+      <input type="email" name="email" placeholder="メールアドレス">
+      <div class="postarea-text">
+        <textarea name="" id="content" cols="30" rows="10" placeholder="Enterで投稿"></textarea>
+      </div>
+      <button id="post" class="postarea-button">送信</button>
+      <button id="delete" class="postarea-button">全て削除</button>
+    </div>
+  </div>
+  <div id="messages" class="content">
+  </div>
+  <p class="footer">Powered by <a href="http://mlkcca.com/">Milkcocoa</a></p>
+</body>
+</html>
