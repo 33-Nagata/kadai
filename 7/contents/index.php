@@ -1,70 +1,86 @@
 <h1>あなたのニュース</h1>
-<h2>最新</h2>
-<table class="news" id="latest">
-  <thead>
-    <tr>
-      <th class="news_title">記事タイトル</th>
-      <th class="news_author">投稿者</th>
-      <th class="news_date">投稿日</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-<hr>
-<h2>フォローしてる人が話題にしていること</h2>
-<table class="news" id="follow">
-  <thead>
-    <tr>
-      <th>記事タイトル</th>
-      <th>投稿者</th>
-      <th>コメント日</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-<hr>
-<h2>関心のありそうなこと</h2>
-<table class="news" id="interest">
-  <thead>
-    <tr>
-      <th>記事タイトル</th>
-      <th>投稿者</th>
-      <th>コメント日</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-<hr>
-<h2>近くで起きたこと</h2>
-<table class="news" id="close">
-  <thead>
-    <tr>
-      <th>記事タイトル</th>
-      <th>投稿者</th>
-      <th>投稿日</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-<hr>
-<h2>近くで話題になってること</h2>
-<table class="news" id="popular">
-  <thead>
-    <tr>
-      <th>記事タイトル</th>
-      <th>投稿者</th>
-      <th>投稿日</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
+<nav class="navbar navbar-news">
+  <ul class="nav navbar-nav">
+    <li class="active"><a id="tab0" href="#">最新</a></li>
+    <li><a id="tab1" href="#">フォロー</a></li>
+    <li><a id="tab2" href="#">関心</a></li>
+    <li><a id="tab3" href="#">近く</a></li>
+    <li><a id="tab4" href="#">話題</a></li>
+  </ul>
+</nav>
+<div class="news_category">
+  <h2>最新</h2>
+  <table class="news" id="latest">
+    <thead>
+      <tr>
+        <th class="news_title">記事タイトル</th>
+        <th class="news_author">投稿者</th>
+        <th class="news_date">投稿日</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div class="news_category" style="display: none;">
+  <h2>フォローしてる人が話題にしていること</h2>
+  <table class="news" id="follow">
+    <thead>
+      <tr>
+        <th>記事タイトル</th>
+        <th>投稿者</th>
+        <th>コメント日</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div class="news_category" style="display:none;">
+  <h2>関心のありそうなこと</h2>
+  <table class="news" id="interest">
+    <thead>
+      <tr>
+        <th>記事タイトル</th>
+        <th>投稿者</th>
+        <th>コメント日</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div class="news_category" style="display:none;">
+  <h2>近くで起きたこと</h2>
+  <table class="news" id="close">
+    <thead>
+      <tr>
+        <th>記事タイトル</th>
+        <th>投稿者</th>
+        <th>投稿日</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div class="news_category" style="display:none;">
+  <h2>近くで話題になってること</h2>
+  <table class="news" id="popular">
+    <thead>
+      <tr>
+        <th>記事タイトル</th>
+        <th>投稿者</th>
+        <th>投稿日</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
 
 <script>
+var shown_news = 0;
 var latest_news = <?php echo json_safe_encode($latest_news); ?>;
 for (var i = 0; i < latest_news.length; i++) {
   latest_news[i]['date_obj'] = new Date(latest_news[i]['date_str']);
@@ -165,6 +181,8 @@ if (navigator.geolocation) {
 }
 
 $(document).ready(function(){
+  // 最新ニュース表示
+  append_news(0);
   // フォローしている人が話題にしているニュース取得
   $.get(
     'get_follow_news.php',
@@ -201,9 +219,18 @@ $(document).ready(function(){
       }
     }
   );
-
-  for (var i = 0; i < categories.length; i++) {
-    append_news(i);
-  }
+  // ナビゲーションクリックで表示ニュース切り替え
+  $(".navbar-news a").on("click", function(){
+    var old_id = shown_news;
+    var new_id = $(this).attr("id").charAt(3);
+    var old_news = $(".news_category:eq("+old_id+")");
+    var new_news = $(".news_category:eq("+new_id+")");
+    $(".navbar-news li").removeClass("active");
+    $(".navbar-news li:eq("+new_id+")").addClass("active");
+    old_news.fadeOut("slow", function(){
+      new_news.fadeIn("slow");
+      shown_news = new_id;
+    });
+  });
 });
 </script>
