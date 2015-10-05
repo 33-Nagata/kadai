@@ -8,29 +8,67 @@
   <meta property="og:type" content="chat" />
   <meta property="og:description" content="BaaS（Milkcocoa）で作られたリアルタイムチャット" />
   <title>LINE風チャットアプリ</title>
-  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" />
+  <link rel="stylesheet" href="style.css">
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="http://cdn.mlkcca.com/v2.0.0/milkcocoa.js"></script>
   <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <span class="navbar-brand">LINE風チャットアプリ</span>
+        </div>
+        <a id="sort" class="btn btn-default navbar-btn header-btn pull-right">並べ替え</a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <div id="messages" class="content">
+      </div>
+      <div id="postarea">
+        <input type="text" name="name" placeholder="名前">
+        <input type="email" name="email" placeholder="メールアドレス">
+        <div class="postarea-text">
+          <textarea name="" id="content" cols="30" rows="10" placeholder="Enterで投稿"></textarea>
+        </div>
+        <button id="post" class="postarea-button">送信</button>
+        <button id="delete" class="postarea-button">全て削除</button>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+      <p class="footer">Powered by <a href="http://mlkcca.com/">Milkcocoa</a></p>
+    </div>
+  </footer>
 
   <script>
   var last_message;
+  var sort = 'asc';
   $(function() {
-    //1.ミルクココアインスタンスを作成
+    // ミルクココアインスタンスを作成
     var milkcocoa = new MilkCocoa("teaifc51u4b.mlkcca.com");
-    //2."message"データストアを作成
+    // "message"データストアを作成
     var ds = milkcocoa.dataStore("message");
-    //3."message"データストアからメッセージを取ってくる
+    // "message"データストアからメッセージを取ってくる
     ds.stream().sort("desc").next(function(err, datas) {
       datas.forEach(function(data) {
         renderMessage(data);
       });
     });
-    //4."message"データストアのプッシュイベントを監視
+    // "message"データストアのプッシュイベントを監視
     ds.on("push", function(e) {
       renderMessage(e);
     });
-    //5."message"データストアにメッセージをプッシュする
+    // "message"データストアにメッセージをプッシュする
     $('#post').on('click', function () {
       post(ds);
     })
@@ -49,6 +87,38 @@
     $('#delete').on('click', function(){
       deleteAllMessages(ds);
     });
+    // 並び順の変更
+    $('#sort').on('click', function(){
+      // 操作用のDocumentFragment作成
+      var fragment = document.createDocumentFragment();
+      var messages = document.getElementById('messages');
+      var base = document.getElementById(last_message);
+      var postarea = document.getElementById('postarea');
+      // messagesをfragmentに移動
+      fragment.appendChild(messages);
+
+      sort = sort == 'asc' ? 'desc' : 'asc';
+      if (sort == 'asc') {
+        var next;
+        // 並べ替え
+        while (messages.lastChild.id != last_message) {
+          next = base.nextSibling;
+          messages.insertBefore(next, messages.firstChild);
+        }
+        // postarea.prepend(messages)
+        postarea.parentNode.insertBefore(messages, postarea);
+        $('#messages').scrollTop($('#messages').get(0).scrollHeight);
+      } else {
+        var prev;
+        // 並べ替え
+        while (messages.firstChild.id != last_message) {
+          prev = base.previousSibling;
+          messages.appendChild(prev);
+        }
+        // postarea.append(messages)
+        postarea.parentNode.appendChild(messages);
+      }
+    });
   });
   function renderMessage(message) {
     var date_html = '<p class="post-date">'+escapeHTML( new Date(message.timestamp).toLocaleString())+'</p>';
@@ -56,10 +126,17 @@
     var message_html = '<p class="post-text">' + escapeHTML(message.value.content) + '</p>';
     var delete_html = '<button class="delete-btn" id="delete'+message.id+'">削除</button>';
     var new_html = '<div id="'+message.id+'" class="post">'+date_html + name_html + message_html + delete_html+'</div>';
+    var messages = $('#messages');
     if (last_message) {
-      $("#"+last_message).before(new_html);
+      if (sort == 'asc') {
+        $('#'+last_message).after(new_html);
+        messages.scrollTop(messages.get(0).scrollHeight);
+      } else {
+        $('#'+last_message).before(new_html);
+        messages.scrollTop(0);
+      }
     } else {
-      $('#messages').append(new_html);
+      messages.append(new_html);
     }
     last_message = message.id;
   }
@@ -111,25 +188,5 @@
     return $('<div>').text(val).html();
   };
   </script>
-</head>
-
-<body>
-  <div class="header">
-    <h1 class="logo">LINE風チャットアプリ</h1>
-  </div>
-  <div class="container">
-    <div class="postarea cf">
-      <input type="text" name="name" placeholder="名前">
-      <input type="email" name="email" placeholder="メールアドレス">
-      <div class="postarea-text">
-        <textarea name="" id="content" cols="30" rows="10" placeholder="Enterで投稿"></textarea>
-      </div>
-      <button id="post" class="postarea-button">送信</button>
-      <button id="delete" class="postarea-button">全て削除</button>
-    </div>
-  </div>
-  <div id="messages" class="content">
-  </div>
-  <p class="footer">Powered by <a href="http://mlkcca.com/">Milkcocoa</a></p>
 </body>
 </html>

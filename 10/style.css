@@ -1,0 +1,19 @@
+.navbar-brand {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.navbar-brand {
+  display: inline-block;
+}
+
+main {
+  margin-top: 70px;
+}
+
+.content {
+  height: 300px;
+  padding: 10px;
+  border: 1px solid gray;
+  overflow-y: scroll;
+}
