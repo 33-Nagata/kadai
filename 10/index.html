@@ -51,9 +51,13 @@
   </footer>
 
   <script>
+  var translator_app_id = encodeURIComponent('v38ZMz/FKfPBmfeZ7hyxOXe7k+EWCBK3kT0YBFlfwcY');
+  var language = 'ja';
   var last_message;
   var sort = 'asc';
   $(function() {
+    // 言語選択ボタン作成
+    setLanguageButton();
     // ミルクココアインスタンスを作成
     var milkcocoa = new MilkCocoa("teaifc51u4b.mlkcca.com");
     // "message"データストアを作成
@@ -125,13 +129,94 @@
         postarea.parentNode.appendChild(messages);
       }
     });
+    // 使用言語変更
+    $('select[name=language]').on('change', function(){
+      language = $(this).children('option:selected').val();
+    });
   });
+
+  function setLanguageButton() {
+    var language_set = [
+      {value: 'ar', text: 'العربية'}, // Arabic
+      {value: 'bs-Latn', text: 'bosanski'}, // Bosnian (Latin)
+      {value: 'bg', text: 'български'}, // Bulgaria
+      {value: 'ca', text: 'Català'}, // Catalan
+      {value: 'zh-CHS', text: '简体字'}, // Chinese Simplified
+      {value: 'zh-CHT', text: '繁体字'}, // Chinese Traditional
+      {value: 'hr', text: 'Hrvatska'}, // Croatian
+      {value: 'cs', text: 'čeština'}, // Czech
+      {value: 'da', text: 'danske'}, // Danish
+      {value: 'nl', text: 'Nederlandse'}, // Dutch
+      {value: 'en', text: 'English'}, // English
+      {value: 'et', text: 'eesti'}, // Estonian
+      {value: 'fi', text: 'suomi'}, // Finnish
+      {value: 'fr', text: 'français'}, // French
+      {value: 'de', text: 'Deutsch'}, // German
+      {value: 'el', text: 'Ελληνική'}, // Greek
+      {value: 'ht', text: 'kreyòl ayisyen'}, // Haitian Creole
+      {value: 'he', text: 'עברית'}, // Hebrew
+      {value: 'hi', text: 'हिन्दी'}, // Hindi
+      {value: 'mww', text: 'Hmoob'}, // Hmong Daw
+      {value: 'hu', text: 'magyar'}, // Hungarian
+      {value: 'id', text: 'indonesia'}, // Indonesian
+      {value: 'it', text: 'italiano'}, // Italian
+      {value: 'ja', text: '日本語'}, // Japanese
+      {value: 'tlh', text: 'tlhIngan Hol'}, // Klingon
+      {value: 'tlh-Qaak', text: 'pIqaD'}, // Klingon (pIqaD)
+      {value: 'ko', text: '한국어'}, // Korean
+      {value: 'lv', text: 'Latvijā'}, // Latvian
+      {value: 'lt', text: 'Lietuvos'}, // Lithuanian
+      {value: 'ms', text: 'Melayu'}, // Malay
+      {value: 'mt', text: 'Malti'}, // Maltese
+      {value: 'no', text: 'norsk'}, // Norwegian
+      {value: 'fa', text: 'فارسی'}, // Persian
+      {value: 'pl', text: 'Polskie'}, // Polish
+      {value: 'pt', text: 'português'}, // Portuguese
+      {value: 'otq', text: 'Hñohño'}, // Querétaro Otomi
+      {value: 'ro', text: 'român'}, // Romanian
+      {value: 'ru', text: 'русский'}, // Russian
+      {value: 'sr-Cyrl', text: 'Српски'}, // Serbian (Cyrillic)
+      {value: 'sr-Latn', text: 'Srpski'}, // Serbian (Latin)
+      {value: 'sk', text: 'slovenský'}, // Slovak
+      {value: 'sl', text: 'slovenščina'}, // Slovenian
+      {value: 'es', text: 'español'}, // Spanish
+      {value: 'sv', text: 'svenska'}, // Swedish
+      {value: 'th', text: 'ไทย'}, // Thai
+      {value: 'tr', text: 'Türk'}, // Turkish
+      {value: 'uk', text: 'Український'}, // Ukrainian
+      {value: 'ur', text: 'اردو'}, // Urdu
+      {value: 'vi', text: 'Tiếng Việt'}, // Vietnamese
+      {value: 'cy', text: 'Cymraeg'}, // Welsh
+      {value: 'yua', text: "Màaya t'àan"}, // Yucatec Maya
+    ];
+    var select_area = document.createElement('select');
+    select_area.setAttribute('name', 'language');
+    for (var i = 0; i < language_set.length; i++) {
+      var option = document.createElement('option');
+      option.setAttribute('value', language_set[i]['value']);
+      option.innerHTML = language_set[i]['text'];
+      select_area.appendChild(option);
+    }
+    $('input[name=email]').after(select_area);
+    $('select[name=language] option[value='+language+']').attr('selected', true);
+  }
   function renderMessage(message) {
-    var date_html = '<p class="post-date">'+escapeHTML( new Date(message.timestamp).toLocaleString())+'</p>';
-    var name_html = '<p class="post-name">' + escapeHTML(message.value.name+'@'+message.value.hash.substr(0,5)) + '</p>';
-    var message_html = '<p class="post-text">' + escapeHTML(message.value.content) + '</p>';
-    var delete_html = '<button class="delete-btn" id="delete'+message.id+'">削除</button>';
-    var new_html = '<div id="'+message.id+'" class="post">'+date_html + name_html + message_html + delete_html+'</div>';
+    var date_html = '<span class="post-date">'+escapeHTML( new Date(message.timestamp).toLocaleString())+'</span>';
+    var name_html = '<span class="post-name">' + escapeHTML(message.value.name+'@'+message.value.hash.substr(0,5)) + '</span>';
+    var sent_id = message.id;
+    var sent_message = escapeHTML(message.value.content);
+    var sent_language = message.value.language;
+    if (sent_language == language) {
+      var foreign_html = '';
+      var mother_html = '<p class="post-text mother">'+sent_message+'</p>';
+    } else {
+      var foreign_html = '<p class="post-text foreign">'+sent_message+'</p>';
+      var mother_html = '<p class="post-text mother"></p>';
+    }
+    var delete_html = '<button class="delete-btn" id="delete'+sent_id+'">削除</button>';
+    var new_html = date_html + name_html + foreign_html + mother_html + delete_html;
+    new_html = sort == 'asc' ? '<hr>' + new_html : new_html + '<hr>';
+    new_html = '<div id="'+sent_id+'" class="post">'+new_html+'</div>';
     var messages = $('#messages');
     if (last_message) {
       if (sort == 'asc') {
@@ -144,7 +229,10 @@
     } else {
       messages.append(new_html);
     }
-    last_message = message.id;
+    if (sent_language != language) {
+      $('#'+sent_id+' .mother').text(translate(sent_id, sent_message, sent_language, language));
+    }
+    last_message = sent_id;
   }
   function post(dataStore) {
     var name = escapeHTML($("input[name=name]").val());
@@ -155,7 +243,8 @@
         {
           name: name,
           hash: hash,
-          content: content
+          content: content,
+          language: language
         },
         function (e) {}
       );
@@ -193,6 +282,26 @@
     while (last_message) {
       deleteMessage(dataStore, last_message);
     }
+  }
+  // テキスト翻訳
+  function translate(id, text, from_lang, to_lang) {
+    $.get(
+      'get_translation.php?',
+      {
+        text: text,
+        from: from_lang,
+        to: to_lang
+      },
+      function(text){
+        $('#'+id+' .mother').text(text);
+        var messages = $('#messages');
+        if (sort == 'asc') {
+          messages.scrollTop(messages.get(0).scrollHeight);
+        } else {
+          messages.scrollTop(0);
+        }
+      }
+    );
   }
   //インジェクション対策
   function escapeHTML(val) {

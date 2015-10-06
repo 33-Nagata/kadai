@@ -17,3 +17,11 @@ main {
   border: 1px solid gray;
   overflow-y: scroll;
 }
+
+.foreign {
+  color: gray;
+}
+
+.mother {
+  color: red;
+}
