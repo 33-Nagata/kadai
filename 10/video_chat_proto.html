@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="stylesheet" href="video_chat.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script type="text/javascript" src="https://skyway.io/dist/0.3/peer.js"></script>
+  <script>
+  var skyway_aip_key = '858faed2-8d5e-487e-ba73-bdf3b537b5b3';
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="column">
+      <div class="video-container">
+        <p id="video-disabled">ビデオ通話使用不可</p>
+        <video id="me" muted="true" autoplay></video>
+      </div>
+    </div>
+    <div class="column">
+      <div class="control">
+        <button class="video-control on">ビデオ通話開始</button>
+        <button class="video-control off">ビデオ通話終了</button>
+        <div id="peer-list"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+  var is_video_allowed;
+  var peer; // PeerJS object
+  var my_peer_id;
+  var connections = {};
+  var peer_checker;
+  // Compatibility shim
+  navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+
+  // hundlers
+
+  // ビデオ通話ON
+  $('button.video-control.on').on('click', function(){
+    allowMedia(function () {
+      toggleVideoControllers();
+      showVideo('me');
+      // debug : {0: no log, 1: err, 2: err/alert, 3: all}
+      peer = new Peer({ key: skyway_aip_key, debug: 2});
+      // PeerServer接続時イベント
+      peer.on('open', function(){
+        my_peer_id = peer.id;
+        // 取得したPeerIdを出力
+        console.log('Peer ID : '+peer.id);
+      });
+
+      // 定期的にアクティブなPeerを取得
+      peer_checker = setInterval(function(){
+        peer.listAllPeers(function(list){
+          // 接続が切れていたらリストから削除
+          var remove_list = [];
+          for (var i = 1; i < $('#peer-list>button').length + 1; i++) {
+            var button_id = $('#peer-list>button:nth-child('+i+')').attr('id');
+            var peer_id = button_id.substr(4);
+            if ($.inArray(peer_id, list) == -1) {
+              remove_list.push(button_id);
+            }
+          }
+          for (var i = 0; i < remove_list.length; i++) {
+            $('#'+remove_list[i]).remove();
+          }
+          // リストになければ追加
+          for (var i = 0; i < list.length; i++) {
+            if (list[i] != my_peer_id && $('#peer'+list[i]).length == 0) {
+              var btn = document.createElement('button');
+              btn.textContent = list[i];
+              btn.id = 'peer'+list[i];
+              $('#peer-list').append(btn);
+              // コールイベント追加
+              $('#'+btn.id).on('click', function(){
+                var peer_id = $(this).attr('id').substr(4);
+                var mediaConnection = peer.call(peer_id, window.localStream);
+                connectPeer(mediaConnection);
+              });
+            }
+          }
+        });
+      }, 10 * 1000);
+
+      /********************
+      * Peer Event Hundlers
+       ********************/
+      // リモートPeerからの着信イベント
+      peer.on('call', function(mediaConnection){
+        // 確認ボタン表示
+        if (confirm('ビデオ通話を受信します')) {
+          mediaConnection.answer(window.localStream);
+          connectPeer(mediaConnection);
+        } else {
+          // refuse connection
+        }
+      });
+      // エラー発生時イベント
+      peer.on('error', function(err){
+        alert(err.message);
+        // 接続を切る
+        $('button.video-control.off').trigger('click');
+      });
+
+    });
+  });
+  // ビデオ通話OFF
+  $('button.video-control.off').on('click', function(){
+    // Peerチェック停止
+    clearInterval(peer_checker);
+    // 自分の映像を非表示
+    $('#me').prop('src', '');
+    // カメラ・マイクを停止
+    stopTracks(window.localStream.getVideoTracks());
+    stopTracks(window.localStream.getAudioTracks());
+    // 他人の映像を削除
+    $('.others').remove();
+    // Peerリスト削除
+    $('#peer-list').remove();
+    // Peerサーバーから切断
+    peer.destroy();
+    if (peer.destroyed) {
+      toggleVideoControllers();
+    }
+  });
+  // Window Size変更
+  $(window).on('resize', function(){
+    changeVideoSize();
+  });
+
+  // Functions
+  function changeVideoSize () {
+    var videos = $('video');
+    videos.prop('width', window.innerWidth * 0.8 * 0.48 / Math.ceil(Math.sqrt(videos.length)));
+  }
+  function connectPeer (mediaConnection) {
+    var connection = mediaConnection;
+    var mediaConnection_peer = mediaConnection.peer;
+    mediaConnection.on('stream', function(stream){
+      var id = mediaConnection_peer;
+      connections[id] = connection;
+      // 相手のビデオを追加
+      var video = document.createElement('video');
+      video.id = id;
+      video.className = 'others';
+      video.setAttribute('src', URL.createObjectURL(stream));
+      video.setAttribute('autoplay', true);
+      $('.video-container').append(video);
+      changeVideoSize();
+      // 相手のビデオをクリックで切断
+      $('#'+id).on('click', function(){
+        connections[id].close();
+      });
+      // 切断時イベント
+      connection.on('close', function(){
+        delete connections[id];
+        $('#'+id).remove();
+        changeVideoSize();
+      });
+    });
+  }
+  function stopTracks (streams) {
+    for (var i = 0; i < streams.length; i++) {
+      streams[i].stop();
+    }
+  }
+  function toggleVideoControllers () {
+    $('#video-disabled').toggle();
+    $('button.video-control').toggle();
+  }
+  function allowMedia (callback) {
+    // ビデオ・音声の使用許可確認
+    navigator.getUserMedia(
+      {audio: true, video: true},
+      // 成功
+      function(stream){
+        window.localStream = stream;
+        is_video_allowed = true;
+        callback();
+      },
+      // 失敗
+      function(){
+        is_video_allowed = false;
+      }
+    );
+  }
+  function showVideo (id) {
+    var video = $('#'+id);
+    if (id == 'me') {
+      // 映像表示
+      changeVideoSize();
+      video.prop('src', URL.createObjectURL(window.localStream));
+    }
+  }
+  </script>
+</body>
+</html>
