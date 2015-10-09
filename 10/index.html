@@ -16,6 +16,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="http://cdn.mlkcca.com/v2.0.0/milkcocoa.js"></script>
   <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+  <script src="js/functions.js"></script>
   <script src="js/web_speech_api_functions.js"></script>
   <script src="js/milk_cocoa_functions.js"></script>
   <script src="js/microsoft_translator_functions.js"></script>
@@ -114,20 +115,19 @@
     $('#post').on('click', function () {
       post(ds);
     });
+    // テキストエリア書き込みイベント
     $('#content').on('keydown', function (e) {
+      // 自動送信キャンセル
       if (timer) {
         clearTimeout(timer);
         timer = false;
       }
-      if (e.which == 13){
-        post(ds);
-        return false;
-      }
+      // Enterで送信
+      if (e.which == 13)　post(ds);
     });
-    // 後から追加した要素にもイベント適用させるため親要素に設定
+    // 後から追加した削除ボタンにもイベント適用させるため親要素に設定
     $('#messages').on('click', '.delete-btn', function(){
-      var id = $(this).attr('id');
-      id = id.substring('delete'.length, id.length);
+      var id = $(this).attr('id').substr('delete'.length);
       deleteMessage(ds, id);
     });
     $('#delete').on('click', function(){
@@ -135,49 +135,9 @@
     });
     // 並び順の変更
     $('#sort').on('click', function(){
-      // 操作用のDocumentFragment作成
-      var fragment = document.createDocumentFragment();
-      var messages = document.getElementById('messages');
-      var base = document.getElementById(last_message);
-      var postarea = document.getElementById('postarea');
-      // messagesをfragmentに移動
-      fragment.appendChild(messages);
-      // フラグ反転
-      sort = sort == 'asc' ? 'desc' : 'asc';
-      // 昇順
-      if (sort == 'asc') {
-        var next;
-        // baseのhrタグ位置変更
-        base.insertBefore(base.lastChild, base.firstChild);
-        // 並べ替え
-        while (messages.lastChild.id != last_message) {
-          next = base.nextSibling;
-          // hrタグ位置変更
-          next.insertBefore(next.lastChild, next.firstChild);
-          // nextを先頭に移動
-          messages.insertBefore(next, messages.firstChild);
-        }
-        // postarea.prepend(messages)
-        postarea.parentNode.insertBefore(messages, postarea);
-        $('#messages').scrollTop($('#messages').get(0).scrollHeight);
-      // 降順
-      } else {
-        var prev;
-        // baseのhrタグ位置変更
-        base.appendChild(base.firstChild);
-        // 並べ替え
-        while (messages.firstChild.id != last_message) {
-          prev = base.previousSibling;
-          // hrタグ位置変更
-          prev.appendChild(prev.firstChild);
-          // prevを最後に移動
-          messages.appendChild(prev);
-        }
-        // postarea.append(messages)
-        postarea.parentNode.appendChild(messages);
-      }
+      reverse();
     });
-    // 使用言語変更
+    // テキスト翻訳言語変更
     $('select[name=text-language]').on('change', function(){
       language = $(this).children('option:selected').val();
     });

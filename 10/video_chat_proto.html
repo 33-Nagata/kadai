@@ -6,7 +6,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script type="text/javascript" src="https://skyway.io/dist/0.3/peer.js"></script>
   <script>
-  var skyway_aip_key = '858faed2-8d5e-487e-ba73-bdf3b537b5b3';
+  var skyway_api_key = '858faed2-8d5e-487e-ba73-bdf3b537b5b3';
   </script>
 </head>
 <body>
@@ -43,7 +43,7 @@
       toggleVideoControllers();
       showVideo('me');
       // debug : {0: no log, 1: err, 2: err/alert, 3: all}
-      peer = new Peer({ key: skyway_aip_key, debug: 2});
+      peer = new Peer({ key: skyway_api_key, debug: 2});
       // PeerServer接続時イベント
       peer.on('open', function(){
         my_peer_id = peer.id;
