@@ -57,3 +57,8 @@ textarea {
   display: table-cell;
   vertical-align: middle;
 }
+
+.post-date {
+  display: inline-block;
+  width: 140px;
+}
