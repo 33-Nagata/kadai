@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <meta property="og:title" content="LINE風チャットアプリ" />
+  <meta property="og:title" content="SkypeTranslator風ビデオチャットアプリ" />
   <meta property="og:type" content="chat" />
-  <meta property="og:description" content="BaaS（Milkcocoa）で作られたリアルタイムチャット" />
-  <title>LINE風チャットアプリ</title>
+  <meta property="og:description" content="Milkcocoa, Microsoft Translator, Chrome Web Speech API, SkyWay で作られたリアルタイムチャット" />
+  <title>SkypeTranslator風ビデオチャットアプリ</title>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" />
@@ -23,7 +23,7 @@
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <span class="navbar-brand">LINE風チャットアプリ</span>
+          <span class="navbar-brand">SkypeTranslator風ビデオチャットアプリ</span>
         </div>
         <a id="sort" class="btn btn-default navbar-btn header-btn pull-right">並べ替え</a>
       </div>
@@ -31,23 +31,50 @@
   </header>
   <main>
     <div class="container">
-      <div id="messages" class="content"></div>
-      <div id="postarea">
-        <input type="text" name="name" placeholder="名前">
-        <input type="email" name="email" placeholder="メールアドレス">
-        <button id="speech" class="on">音声入力ON</button>
-        <div class="postarea-text">
-          <textarea name="" id="content" cols="30" rows="10" placeholder="Enterで投稿"></textarea>
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <div class="video-container">
+            <p id="video-disabled">ビデオ通話使用不可</p>
+            <video id="me" muted="true" autoplay></video>
+          </div>
         </div>
-        <button id="post" class="postarea-button">送信</button>
-        <button id="delete" class="postarea-button">全て削除</button>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <div id="messages" class="content"></div>
+          <div id="postarea">
+            <div id="id-info">
+              <label for="name" class="sr-only">名前</label>
+              <input type="text" name="name" placeholder="名前">
+              <label for="email" class="sr-only">メールアドレス</label>
+              <input type="email" name="email" placeholder="メールアドレス">
+            </div>
+            <div id="text-setting">
+              <span class="glyphicon glyphicon-pencil"></span>
+              <label for="text-language" class="sr-only">文字入力言語</label>
+            </div>
+            <div id="speech-setting">
+              <span class="glyphicon glyphicon-ice-lolly"></span>
+              <label for="speech-language" class="sr-only">音声入力言語</label>
+              <button class="speech on">ON</button>
+              <button class="speech off">OFF</button>
+            </div>
+            <div id="video-setting">
+              <span class="glyphicon glyphicon-facetime-video"></span>
+              <button class="video-control on">ON</button>
+              <button class="video-control off">OFF</button>
+              <div id="peer-list"></div>
+            </div>
+            <div class="postarea-text">
+              <textarea name="" id="content" rows="2" placeholder="Enterで投稿"></textarea>
+            </div>
+            <button id="post" class="postarea-button">送信</button>
+            <button id="delete" class="postarea-button">全て削除</button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
-  <footer>
-    <div class="container">
-      <p class="footer">Powered by <a href="http://mlkcca.com/">Milkcocoa</a></p>
-    </div>
+  <footer class="footer navbar-default">
+    <p class="footer-text">Made in <a href="http://gsacademy.tokyo/">G's Academy</a></p>
   </footer>
 
   <script>
@@ -215,7 +242,7 @@
       option.innerHTML = text_languages[i]['text'];
       select.appendChild(option);
     }
-    $('input[name=email]').after(select);
+    $('label[for=text-language]').after(select);
     $('select[name=text-language]').children('option[value='+language+']').attr('selected', true);
   }
   function setSpeechLangBtn() {
@@ -302,8 +329,8 @@
       option.textContent = speech_languages[i][0];
       select.appendChild(option);
     }
-    $('#speech').after(select);
-    var btn = $('#speech');
+    $('label[for=speech-language]').after(select);
+    var btn = $('.speech');
     var lang_select = $('select[name=speech-language]');
     // デフォルト言語選択
     lang_select.find('option[value='+speech_default+']').attr({selected: true});
@@ -314,15 +341,14 @@
     // ボタン操作設定
     btn.on('click', function(){
       var dialect_select = document.querySelector('select[name=dialect]');
+      $('.speech').toggle();
       // on
       if ($(this).hasClass('on')) {
-        $(this).removeClass('on').addClass('off').text('音声入力OFF');
         lang_select.prop('disabled', true);
         if (dialect_select !== null) dialect_select.disabled = true;
         recStart();
       // off
       } else {
-        $(this).removeClass('off').addClass('on').text('音声入力ON');
         lang_select.prop('disabled', false);
         if (dialect_select !== null) dialect_select.disabled = false;
         rec.stop();
