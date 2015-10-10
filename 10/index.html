@@ -16,10 +16,12 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="http://cdn.mlkcca.com/v2.0.0/milkcocoa.js"></script>
   <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+  <script src="https://skyway.io/dist/0.3/peer.js"></script>
   <script src="js/functions.js"></script>
   <script src="js/web_speech_api_functions.js"></script>
   <script src="js/milk_cocoa_functions.js"></script>
   <script src="js/microsoft_translator_functions.js"></script>
+  <script src="js/skyway_functions.js"></script>
 </head>
 
 <body>
@@ -58,17 +60,17 @@
             <div id="speech-setting">
               <span class="glyphicon glyphicon-ice-lolly"></span>
               <label for="speech-language" class="sr-only">音声入力言語</label>
-              <button class="speech on">ON</button>
+              <button class="speech on" disabled="disabled">ON</button>
               <button class="speech off">OFF</button>
             </div>
             <div id="video-setting">
               <span class="glyphicon glyphicon-facetime-video"></span>
-              <button class="video-control on">ON</button>
+              <button class="video-control on" disabled="disabled">ON</button>
               <button class="video-control off">OFF</button>
               <div id="peer-list"></div>
             </div>
             <div class="postarea-text">
-              <textarea name="" id="content" rows="2" placeholder="Enterで投稿"></textarea>
+              <textarea name="" id="content" rows="2" placeholder="Enterで投稿" disabled="disabled"></textarea>
             </div>
             <button id="post" class="postarea-button">送信</button>
             <button id="delete" class="postarea-button">全て削除</button>
@@ -92,6 +94,10 @@
   var speech_languages; // 音声入力言語リスト
   var timer = false; // 音声入力時の自動送信タイマー
   var rec; // 音声認識インスタンス
+  var skyway_api_key = '858faed2-8d5e-487e-ba73-bdf3b537b5b3';
+  var peer; // PeerJS object
+  var connections = {}; // connected peers
+  var peer_checker; // Peer Check Timer
   $(function() {
     // 文字入力言語選択ボタン作成
     setTextLangBtn();
@@ -140,6 +146,44 @@
     // テキスト翻訳言語変更
     $('select[name=text-language]').on('change', function(){
       language = $(this).children('option:selected').val();
+    });
+    // ビデオ通話
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    $('button.video-control').on('click', function(){
+      // ビデオ通話ON
+      if ($(this).hasClass('on')) {
+        getMediaPermission(setSkyway);
+      // ビデオ通話OFF
+      } else {
+        // Peerチェック停止
+        clearInterval(peer_checker);
+        // 自分の映像を非表示
+        $('#me').prop('src', '');
+        // カメラ・マイク停止
+        stopTracks(window.localStream.getVideoTracks());
+        stopTracks(window.localStream.getAudioTracks());
+        // 他人の映像削除
+        $('.others').remove();
+        // Peerリスト削除
+        $('#peer-list').children().remove();
+        // Peerサーバーから切断
+        peer.destroy();
+        if (peer.destroyed) {
+          toggleVideoControllers();
+        }
+      }
+    });
+    // 名前とメールアドレスの入力必須
+    $('input').on('change', function(){
+      if ($('input[name=name]').val() == '' || $('input[name=email]').val() == '') {
+        setControllers('disable');
+      } else {
+        setControllers('enable');
+      }
+    });
+    // Window Size変更
+    $(window).on('resize', function(){
+      changeVideoSize();
     });
   });
   </script>

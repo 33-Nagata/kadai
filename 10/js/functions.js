@@ -41,3 +41,19 @@ function reverse () {
     postarea.parentNode.appendChild(messages);
   }
 }
+
+Array.prototype.diff = function(array) {
+  return this.filter(function(i) {
+    return array.indexOf(i) < 0;
+  });
+}
+
+function setControllers (order) {
+  if (order == 'enable') {
+    $('button.on').removeAttr('disabled');
+    $('textarea').removeAttr('disabled');
+  } else {
+    $('button.on').attr('disabled', 'disabled');
+    $('textarea').attr('disabled', 'disabled');
+  }
+}

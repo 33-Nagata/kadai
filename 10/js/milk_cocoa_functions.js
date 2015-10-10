@@ -35,9 +35,8 @@ function renderMessage(message) {
 
 function post(dataStore) {
   var name = escapeHTML($("input[name=name]").val());
-  var hash = escapeHTML(CryptoJS.MD5($("input[name=email]").val()));
-  var name = $('input[name=name]').val();
   var email = $('input[name=email]').val();
+  var hash = CryptoJS.MD5(email).toString(CryptoJS.enc.hex);
   var content = escapeHTML($("#content").val());
   if (name !== "" && email !== "" && content && content !== "") {
     dataStore.push(
