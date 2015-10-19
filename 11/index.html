@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ぐるなびAPI</title>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="author" content="Shinsuke Nagata">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- <link rel="stylesheet" href="css/style.css"> -->
+<!--&#91;if lt IE 9&#93;>
+<script src="//cdn.jsdelivr.net/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+<!&#91;endif&#93;-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+<body>
+  <header></header>
+  <main>
+    <div id="area">
+      <label for="area">地域</label>
+    </div>
+    <div id="pref" style="display: none;">
+      <label for="pref">都道府県</label>
+    </div>
+    <div id="garea_large" style="display: none;">
+      <label for="garea_large">エリア大</label>
+    </div>
+    <div id="garea_middle" style="display: none;">
+      <label for="garea_middle">エリア中</label>
+    </div>
+    <div id="garea_small" style="display: none;">
+      <label for="garea_small">エリア小</label>
+    </div>
+    <div id="category_l">
+      <label for="category_l">カテゴリ大</label>
+    </div>
+    <div id="category_s" style="display: none;">
+      <label for="category_s">カテゴリ小</label>
+    </div>
+    <div id="name">
+      <label for="name">名称</label>
+      <input name="name">
+    </div>
+    <button id="search">検索</button>
+    <div id="restaurants"></div>
+  </main>
+  <footer></footer>
+
+  <script>
+  var param_data = {};
+  // プルダウンメニューのテンプレート作成
+  var select_template = document.createElement('select');
+  var default_option = document.createElement('option');
+  default_option.value = '0';
+  default_option.textContent = '選択されていません';
+  select_template.appendChild(default_option);
+
+  $(document).on('ready', function(){
+    // エリア取得
+    showDiv('area', {});
+    // カテゴリ大取得
+    showDiv('category_l', {});
+    // 検索ボタン
+    setSearchBtn();
+  });
+
+  function setBtn (name, code) {
+    var data = param_data[name];
+    var size = '';
+    if (name.indexOf('garea') != -1) {
+      size = name.substr('garea_'.length, 1);
+    }
+    var select = select_template.cloneNode(true);
+    select.setAttribute('name', name);
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < data.length; i++) {
+      var option = document.createElement('option');
+      $.each(data[i], function (key, value) {
+        if (typeof value != 'object') {
+          if ($.inArray(key, [name+'_name', 'areaname_'+size]) != -1) {
+            option.textContent = value;
+          } else {
+            option.setAttribute(key, value);
+          }
+        } else {
+          $.each(value, function (key, value) {
+            option.setAttribute(key, value);
+          });
+        }
+      });
+      var key = Object.keys(code)[0];
+      var value = code[key];
+      if (key === undefined || option.getAttribute(key) == code[key]) {
+        fragment.appendChild(option);
+      }
+    }
+    setEvent(select);
+    $('label[for='+name+']').after(select);
+    select.appendChild(fragment);
+  }
+  function setSearchBtn () {
+    $('#search').on('click', function () {
+      var query = {};
+      // 地域
+      query = addQuery(query, 'area', 'area');
+      // 都道府県
+      query = addQuery(query, 'pref', 'pref');
+      // エリア大
+      query = addQuery(query, 'garea_large', 'areacode_l');
+      // エリア中
+      query = addQuery(query, 'garea_middle', 'areacode_m');
+      // エリア小
+      query = addQuery(query, 'garea_small', 'areacode_s');
+      // カテゴリ大
+      query = addQuery(query, 'category_l', 'category_l');
+      // カテゴリ小
+      query = addQuery(query, 'category_s', 'category_s');
+      // 名称
+      var name = $('input[name=name]').val();
+      if (name != '') query['name'] = encodeURIComponent(name);
+      $.get(
+        'fetch_restaurant_list.php',
+        query,
+        function (json) {
+          var data = JSON.parse(json);
+          var dl = document.createElement('dl');
+          for (var i = 0; i < data.length; i++) {
+            var dd = document.createElement('dd');
+            dd.textContent = data[i]['name'];
+            dl.appendChild(dd);
+          }
+          $('#restaurants').empty().append(dl);
+        }
+      );
+    });
+  }
+  function addQuery (query, div_id, param) {
+    var selected = $('#'+div_id+'>select>option:selected');
+    if (selected && selected.val() != '0') {
+      query[param] = selected.attr(param+'_code');
+    }
+    return query;
+  }
+  function setEvent (select) {
+    $(select).on('change', function () {
+      switch ($(this).attr('name')) {
+        // 地域選択
+        case 'area':
+          resetPref();
+          if ($(this).children('option:selected').val() != '0') {
+            var area_code = $(this).children('option:selected').attr('area_code');
+            showDiv('pref', {area_code: area_code});
+          }
+          break;
+        // 都道府県選択
+        case 'pref':
+          resetGareaL();
+          if ($(this).children('option:selected').val() != '0') {
+            var pref_code = $(this).children('option:selected').attr('pref_code');
+            showDiv('garea_large', {pref_code : pref_code});
+          }
+          break;
+        // エリア大選択
+        case 'garea_large':
+          resetGareaM();
+          if ($(this).children('option:selected').val() != '0') {
+            var gl_code = $(this).children('option:selected').attr('areacode_l');
+            showDiv('garea_middle', {areacode_l: gl_code});
+          }
+          break;
+        // エリア中選択
+        case 'garea_middle':
+          resetGareaS();
+          if ($(this).children('option:selected').val() != '0') {
+            var gm_code = $(this).children('option:selected').attr('areacode_m');
+            showDiv('garea_small', {areacode_m: gm_code});
+          }
+          break;
+        // カテゴリ大選択
+        case 'category_l':
+          resetCategoryS();
+          if ($(this).children('option:selected').val() != '0') {
+            var cl_code = $(this).children('option:selected').attr('category_l_code');
+            showDiv('category_s', {category_l_code: cl_code});
+          }
+          break;
+      }
+    });
+  }
+  function showDiv (id, code) {
+    var div = $('#'+id);
+    if (param_data[id] !== undefined) {
+      setBtn(id, code);
+    } else {
+      $.get(
+        'fetch_'+id+'.php',
+        '',
+        function (json) {
+          param_data[id] = JSON.parse(json);
+          setBtn(id, code);
+        }
+      );
+    }
+    div.show();
+  }
+  function resetPref () {
+    hideArea('pref');
+    resetGareaL();
+  }
+  function resetGareaL () {
+    hideArea('garea_large');
+    resetGareaM();
+  }
+  function resetGareaM () {
+    hideArea('garea_middle');
+    resetGareaS();
+  }
+  function resetGareaS () {
+    hideArea('garea_small');
+  }
+  function resetCategoryS () {
+    hideArea('category_s');
+  }
+  function hideArea (id) {
+    var div = $('#'+id);
+    div.hide();
+    div.children('select').remove();
+  }
+  </script>
+</body>
+</html>
