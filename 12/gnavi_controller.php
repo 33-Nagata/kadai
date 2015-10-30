@@ -1,21 +1,14 @@
 <?php
 // アクセスキー
-define('GNAVI_API_KEY', 'c1e7f6dc85cf8322af6959e0097f62bc');
+define('GNAVI_API_KEY', 'f773185ed62a7d385aa6992d613acd27');
 define('RESTAURANT_SEARCH_API_URL', 'http://api.gnavi.co.jp/RestSearchAPI/20150630/');
 
 $gc = new gnaviController($_GET);
 
-// $p = [
-//   'area_m' => 'AREAM5502',
-//   'sort' => 1,
-//   'offset' => 10,
-//   'max' => 2,
-//   'page' => 2,
-//   'sunday' => 1
-// ];
-// $gc->changeRequestParams($p);
-$gc->download();
-$gc->show();
+if (!$gc->downloadMaster($_GET)) {
+  $gc->download();
+  $gc->show();
+}
 
 class gnaviController {
   // レストラン情報格納変数
@@ -180,6 +173,49 @@ class gnaviController {
     // リクエストパラメータ初期化
     $this->initRequestParams();
     if (count($param_array) > 0) $this->changeRequestParams($param_array);
+  }
+
+  public function downloadMaster($param) {
+    foreach (array_keys($this->master_urls) as $key) {
+      if (in_array($key.'_master', array_keys($param))) {
+        $master_data = $this->execGnaviApi($this->master_urls[$key], $this->basic_query);
+        switch ($key) {
+          case 'region':
+            $type = 'area';
+            break;
+          case 'area_l':
+            $type = 'garea_large';
+            break;
+          case 'area_m':
+            $type = 'garea_middle';
+            break;
+          case 'area_s':
+            $type = 'garea_small';
+            break;
+          default:
+            $type = $key;
+            break;
+        }
+        $json = json_encode($master_data->$type);
+        $replace_str = [
+          'area_code' => 'region_code',
+          'area_name' => 'region_name',
+          'garea_large' => 'area_l',
+          'areacode_l' => 'area_l_code',
+          'areaname_l' => 'area_l_name',
+          'garea_middle' => 'area_m',
+          'areacode_m' => 'area_m_code',
+          'areaname_m' => 'area_m_name',
+          'garea_small' => 'area_s',
+          'areacode_s' => 'area_s_code',
+          'areaname_s' => 'area_s_name'
+        ];
+        $json = str_replace(array_keys($replace_str), array_values($replace_str), $json);
+        echo $json;
+        return true;
+      }
+    }
+    return false;
   }
 
   public function initRequestParams() {
@@ -385,7 +421,7 @@ class gnaviController {
     $code = $data->$code_property;
     $name = $data->$name_property;
     for ($i=0; $i < count($code); $i++) {
-      $category[] = [$code[$i] => $name[$i]];
+      if (is_string($code[$i])) $category[] = [$code[$i] => $name[$i]];
     }
     return $category;
   }

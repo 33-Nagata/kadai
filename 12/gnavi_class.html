@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>ぐるなび</title>
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+<body>
+  <header></header>
+  <main>
+    <div class="left">
+      <div id="name">
+        <label for="name">店舗名</label>
+        <input name="name" type="text">
+      </div>
+      <div id="kana">
+        <label for="kana">店舗名読み</label>
+        <input name="kana" type="text">
+      </div>
+      <div id="tel">
+        <label for="tel">電話番号</label>
+        <input name="tel" type="tel" size="14" maxlength="13" title="市外局番からハイフン(-)を入れて記入してください" pattern="\d{1,5}-\d{1,4}-\d{4,5}" placeholder="00-0000-0000">
+      </div>
+      <div id="address">
+        <label for="address">住所</label>
+        <input name="address" type="text" placeholder="都道府県・市町村・番地">
+      </div>
+      <div id="region">
+        <label for="region">地域</label>
+      </div>
+      <div id="pref" style="display: none;">
+        <label for="pref">都道府県</label>
+      </div>
+      <div id="area_l" style="display: none;">
+        <label for="area_l">エリア大</label>
+      </div>
+      <div id="area_m" style="display: none;">
+        <label for="area_m">エリア中</label>
+      </div>
+      <div id="area_s" style="display: none;">
+        <label for="area_s">エリア小</label>
+      </div>
+      <div id="category_l">
+        <label for="category_l">カテゴリ大</label>
+      </div>
+      <div id="category_s" style="display: none;">
+        <label for="category_s">カテゴリ小</label>
+      </div>
+      <div id="latitude">
+        <label for="latitude">緯度</label>
+        <input name="latitude" type="number" max="90" min="-90" step="0.000001">
+      </div>
+      <div id="longitude">
+        <label for="longitude">経度</label>
+        <input name="longitude" type="number" max="180" min="-180" step="0.000001">
+      </div>
+      <div id="range">
+        <label for="range">緯度・経度からの検索範囲</label>
+        <select name="range">
+          <option value="1">300m</option>
+          <option value="2">500m</option>
+          <option value="3">1000m</option>
+          <option value="4">2000m</option>
+          <option value="5">3000m</option>
+        </select>
+      </div>
+      <div id="sort">
+        <label for="sort">ソート順</label>
+        <select name="sort">
+          <option value="0">ぐるなびソート順</option>
+          <option value="1">店舗名</option>
+          <option value="2">業態</option>
+        </select>
+      </div>
+      <div id="max">
+        <label for="max">表示件数</label>
+        <input name="max" type="number" placeholder="初期値10" min="1">
+      </div>
+      <div id="page">
+        <label for="page">ページ番号</label>
+        <input name="page" type="number" placeholder="初期値1" min="1">
+      </div>
+      <div id="words">
+        <label for="words">検索ワード</label>
+        <input name="words" type="text" placeholder="「,」区切りで10個まで指定可能">
+      </div>
+      <div id="word_condition">
+        <label for="word_condition">検索条件</label>
+        <select name="word_condition">
+          <option value="1">AND</option>
+          <option value="2">OR</option>
+        </select>
+      </div>
+      <div id="narrow_option[]" class="clearfix">
+        <div class="narrow_option_label">
+          <label for="narrow_option[]">絞り込み条件</label>
+        </div>
+        <div class="narrow_option">
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="lunch">ランチ営業あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="no_smoking">禁煙席あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="card">カード利用可</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="mobilephone">携帯の電波が入る</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="bottomless">飲み放題あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="sunday">日曜営業あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="takeout">テイクアウトあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="private_room">個室あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="midnight">深夜営業あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="parking">駐車場あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="memorial">法事利用可</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="birthday">誕生日特典あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="engagement">結納利用可</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="kids">キッズメニューあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="power_supply">電源あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="wifi">wifiあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="microphone">マイクあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="buffe">食べ放題あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="late_lunch">14時以降のランチあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="sports">スポーツ観戦可</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="until_morning">朝まで営業あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="lunch_desert">ランチデザートあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="projecter">プロジェクター・スクリーンあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="pets">ペット同伴可</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="deliverly">デリバリーあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="holiday_lunch">土日特別ランチあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="e_money">電子マネー利用可</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="caterling">ケータリングあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="breakfast">モーニング・朝ごはんあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="desert_buffet">デザートビュッフェあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="lunch_buffet">ランチビュッフェあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="bento">お弁当あり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="lunch_salad_buffet">ランチサラダバーあり</span>
+          <span class="line"><input name="narrow_option[]" type="checkbox" value="darts">ダーツあり</span>
+        </div>
+      </div>
+      <button id="search">検索</button>
+    </div>
+    <div class="center"></div>
+    <div class="right">
+      <div id="restaurants"></div>
+    </div>
+  </main>
+  <footer></footer>
+
+  <script>
+  var pulldown_data = {};
+  var restaurants = [];
+  // 場所・カテゴリのプルダウンメニューテンプレート作成
+  var select_template = document.createElement('select');
+  var default_option = document.createElement('option');
+  default_option.value = '0';
+  default_option.textContent = '選択されていません';
+  select_template.appendChild(default_option);
+
+  $(document).on('ready', function () {
+    // 地域取得
+    showPulldown('region');
+    // カテゴリ大取得
+    showPulldown('category_l');
+    // 検索ボタン
+    setSearchBtn();
+  });
+
+  function showPulldown (id, code) {
+    // 既にマスタデータがある場合
+    if (pulldown_data[id] !== undefined) {
+      setBtn(id, code);
+    // マスタデータがない場合
+    } else {
+      $.get(
+        'gnavi_controller.php',
+        id+'_master=1',
+        function (json) {
+          pulldown_data[id] = JSON.parse(json);
+          setBtn(id, code);
+        }
+      );
+    }
+    $('#'+id).show();
+  }
+
+  function setSearchBtn () {
+    $('#search').on('click', function () {
+      var query = {};
+
+      query = addInputValue($('input[type=text], input[type=tel], input[type=number]'), query);
+
+      query = addSelectValue($('select'), query);
+
+      query = addCheckboxValue($('input[type=checkbox]:checked'), query);
+
+      // 不要なクエリ削除
+      if (query.pref !== undefined) delete query.region;
+      if (query.area_l !== undefined) delete query.pref;
+      if (query.area_m !== undefined) delete query.area_l;
+      if (query.area_s !== undefined) delete query.area_m;
+      if (query.category_s !== undefined) delete query.category_l;
+      if (query.latitude === undefined || query.longitude === undefined) delete query.range;
+      if (query.words === undefined) delete query.word_condition;
+
+      // レストランデータダウンロード
+      if (Object.keys(query).length) {
+        $.get(
+          'gnavi_controller.php',
+          query,
+          function (json) {
+            var data = JSON.parse(json);
+            restaurants = [];
+            for (var i = 0; i < data.length; i++) {
+              var restaurant = new Restaurant();
+              $.each(data[i], function (key, value) {
+                restaurant[key] = value;
+              });
+              restaurants.push(restaurant);
+            }
+            console.log(restaurants);
+            var dl = document.createElement('dl');
+            for (var i = 0; i < data.length; i++) {
+              var dd = document.createElement('dd');
+              dd.textContent = data[i]['name'];
+              dl.appendChild(dd);
+            }
+            $('#restaurants').empty().append(dl);
+          }
+        );
+      }
+    });
+  }
+
+  function setBtn (name, code_option) {
+    var code = code_option || {}
+    // プルダウンメニューのデータ読み込み
+    var data = pulldown_data[name];
+
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < data.length; i++) {
+      var option = document.createElement('option');
+      $.each(data[i], function (key, value) {
+        // オブジェクトなら中身をoptionの属性に設定
+        if (typeof value == 'object') {
+          $.each(value, function (key, value) {
+            option.setAttribute(key, value);
+          });
+        } else {
+          // optionの属性
+          if (key != name+'_name') {
+            option.setAttribute(key, value);
+          // optionのテキスト
+          } else {
+            option.textContent = value;
+          }
+        }
+      });
+      // 親カテゴリの属性名
+      var parent_attr = Object.keys(code)[0];
+      // 親カテゴリの属性値
+      var parent_value = code[parent_attr];
+      // オプション追加
+      if (parent_attr === undefined || option.getAttribute(parent_attr) == parent_value) {
+        fragment.appendChild(option);
+      }
+    }
+    var select = select_template.cloneNode(true);
+    select.setAttribute('name', name);
+    select.setAttribute('master', true);
+    setEvent(select);
+    $('label[for='+name+']').after(select);
+    select.appendChild(fragment);
+  }
+
+  // 地域・カテゴリ選択プルダウンへのイベント設定
+  function setEvent (select) {
+    $(select).on('change', function () {
+      var attr = $(this).attr('name');
+      var child = null;
+      switch (attr) {
+        // 地域選択
+        case 'region':
+          var child = 'pref';
+          break;
+        // 都道府県選択
+        case 'pref':
+          var child = 'area_l';
+          break;
+        // エリア大選択
+        case 'area_l':
+          var child = 'area_m';
+          break;
+        // エリア中選択
+        case 'area_m':
+          var child = 'area_s';
+          break;
+        // カテゴリ大選択
+        case 'category_l':
+          var child = 'category_s';
+          break;
+      }
+      if (child) {
+        resetPulldown(child);
+
+        var $option = $(this).children('option:selected');
+        if ($option.val() != '0') {
+          var code = $option.attr(attr+'_code');
+          var status = {};
+          status[attr+'_code'] = code;
+          showPulldown(child, status);
+        }
+      }
+    });
+  }
+
+  // 地域・カテゴリ選択プルダウンを非表示
+  function resetPulldown (id) {
+    hideArea(id);
+    var child = null;
+    switch (id) {
+      case 'pref':
+        child = 'area_l';
+        break;
+      case 'area_l':
+        child = 'area_m';
+        break;
+      case 'area_m':
+        child = 'area_s';
+        break;
+      case 'category_l':
+        child = 'category_s';
+        break;
+    }
+    if (child) resetPulldown(child);
+  }
+
+  function hideArea (id) {
+    var $div = $('#'+id);
+    $div.hide();
+    $div.children('select').remove();
+  }
+
+  function addInputValue ($input, query) {
+    $input.each(function () {
+      var value = $(this).val();
+      if (value != '') query[$(this).attr('name')] = value;
+    });
+    return query;
+  }
+
+  function addSelectValue ($select, query) {
+    $select.each(function () {
+      var $option = $(this).children('option:selected');
+      var key = $(this).attr('name');
+      var value = null;
+      if ($option.val() != '0') {
+        if ($(this).attr('master') !== undefined) {
+          var value = $option.attr(key+'_code');
+        } else {
+          var value = $option.val();
+        }
+      }
+      if (value) query[key] = value;
+    });
+    return query;
+  }
+
+  function addCheckboxValue ($checkbox, query) {
+    $checkbox.each(function () {
+      query[$(this).val()] = 1;
+    });
+    return query;
+  }
+
+  Restaurant = function () {
+  };
+
+  Restaurant.prototype.show = function () {
+    return this.name;
+  }
+  </script>
+</body>
+</html>
