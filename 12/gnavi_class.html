@@ -137,7 +137,9 @@
       </div>
       <button id="search">検索</button>
     </div>
-    <div class="center"></div>
+    <div class="center">
+      <div id="current"></div>
+    </div>
     <div class="right">
       <div id="restaurants"></div>
     </div>
@@ -147,6 +149,7 @@
   <script>
   var pulldown_data = {};
   var restaurants = [];
+  var current = null;
   // 場所・カテゴリのプルダウンメニューテンプレート作成
   var select_template = document.createElement('select');
   var default_option = document.createElement('option');
@@ -208,21 +211,23 @@
           function (json) {
             var data = JSON.parse(json);
             restaurants = [];
+            var fragment = document.createDocumentFragment();
             for (var i = 0; i < data.length; i++) {
               var restaurant = new Restaurant();
               $.each(data[i], function (key, value) {
                 restaurant[key] = value;
               });
               restaurants.push(restaurant);
+              var btn = document.createElement('button');
+              btn.id = i;
+              btn.textContent = restaurant.name;
+              $(btn).on('click', function () {
+                current = restaurants[$(this).attr('id')];
+                current.show();
+              });
+              fragment.appendChild(btn);
             }
-            console.log(restaurants);
-            var dl = document.createElement('dl');
-            for (var i = 0; i < data.length; i++) {
-              var dd = document.createElement('dd');
-              dd.textContent = data[i]['name'];
-              dl.appendChild(dd);
-            }
-            $('#restaurants').empty().append(dl);
+            $('#restaurants').empty().append(fragment);
           }
         );
       }
@@ -374,7 +379,7 @@
   };
 
   Restaurant.prototype.show = function () {
-    return this.name;
+    $('#current').text(this.name);
   }
   </script>
 </body>

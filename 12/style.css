@@ -46,12 +46,18 @@ body {
 
     .center {
       width: 40%;
+      float: left;
+      text-align: center;
     }
 
     .right {
       width: 30%;
       float: right;
     }
+
+      .right button {
+        display: block;
+      }
 
 .clearfix:after {
   content: "";
